@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tawlity Support</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="app-header">
+  <h1>Tawlity Support</h1>
+  <a href="agent.html">Agent login &rarr;</a>
+</header>
+
+<div class="container">
+  <div id="new-ticket-card" class="card">
+    <h2 style="margin-top:0;font-size:16px;">Open a support ticket</h2>
+    <form id="ticket-form">
+      <label for="subject">What's this about?</label>
+      <input id="subject" name="subject" placeholder="e.g. Can't confirm my reservation" required />
+
+      <label for="message">Tell us more</label>
+      <textarea id="message" name="message" placeholder="Describe the issue..." required></textarea>
+
+      <label>How should we reach you?</label>
+      <div class="radio-row">
+        <label><input type="radio" name="contactType" value="email" checked /> Email</label>
+        <label><input type="radio" name="contactType" value="phone" /> WhatsApp / Phone</label>
+      </div>
+
+      <label for="contactInfo" id="contact-label">Email address</label>
+      <input id="contactInfo" name="contactInfo" placeholder="you@example.com" required />
+
+      <div style="margin-top:16px;">
+        <button type="submit">Submit ticket</button>
+      </div>
+      <div id="form-error" class="error" style="display:none;"></div>
+    </form>
+  </div>
+
+  <div id="ticket-card" class="card" style="display:none;">
+    <div class="ticket-meta">
+      <h2>Ticket <span id="ticket-id"></span> &mdash; <span id="ticket-subject"></span></h2>
+      <span id="ticket-status" class="status-badge"></span>
+    </div>
+    <div id="messages" class="messages"></div>
+    <div class="reply-row">
+      <textarea id="reply-text" placeholder="Add more details..."></textarea>
+      <button id="reply-send">Send</button>
+    </div>
+    <p class="hint">We'll keep this page updated automatically as an agent responds.</p>
+  </div>
+</div>
+
+<script>
+const contactTypeRadios = document.querySelectorAll('input[name="contactType"]');
+const contactLabel = document.getElementById('contact-label');
+const contactInfo = document.getElementById('contactInfo');
+
+contactTypeRadios.forEach((r) => r.addEventListener('change', () => {
+  if (document.querySelector('input[name="contactType"]:checked').value === 'phone') {
+    contactLabel.textContent = 'Phone number';
+    contactInfo.placeholder = '+965 5000 1234';
+  } else {
+    contactLabel.textContent = 'Email address';
+    contactInfo.placeholder = 'you@example.com';
+  }
+}));
+
+const form = document.getElementById('ticket-form');
+const formError = document.getElementById('form-error');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  formError.style.display = 'none';
+  const payload = {
+    subject: document.getElementById('subject').value.trim(),
+    message: document.getElementById('message').value.trim(),
+    contactType: document.querySelector('input[name="contactType"]:checked').value,
+    contactInfo: contactInfo.value.trim(),
+  };
+  try {
+    const res = await fetch('/api/tickets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to submit ticket');
+    localStorage.setItem('tawlity-ticket-id', data.id);
+    const url = new URL(window.location);
+    url.searchParams.set('ticket', data.id);
+    window.history.replaceState({}, '', url);
+    showTicket(data.id);
+  } catch (err) {
+    formError.textContent = err.message;
+    formError.style.display = 'block';
+  }
+});
+
+const newTicketCard = document.getElementById('new-ticket-card');
+const ticketCard = document.getElementById('ticket-card');
+let pollTimer = null;
+let currentTicketId = null;
+
+function statusClass(status) {
+  return { open: 'status-open', escalated: 'status-escalated', resolved: 'status-resolved' }[status] || 'status-open';
+}
+
+function renderTicket(ticket) {
+  document.getElementById('ticket-id').textContent = '#' + ticket.id;
+  document.getElementById('ticket-subject').textContent = ticket.subject;
+  const statusEl = document.getElementById('ticket-status');
+  statusEl.textContent = ticket.status;
+  statusEl.className = 'status-badge ' + statusClass(ticket.status);
+
+  const messagesEl = document.getElementById('messages');
+  messagesEl.innerHTML = '';
+  ticket.messages.forEach((m) => {
+    const div = document.createElement('div');
+    div.className = 'bubble ' + (m.author === 'agent' ? 'agent' : 'customer');
+    const author = document.createElement('div');
+    author.className = 'author';
+    author.textContent = m.author === 'agent' ? 'Tawlity Support' : 'You';
+    const text = document.createElement('div');
+    text.textContent = m.text;
+    div.appendChild(author);
+    div.appendChild(text);
+    messagesEl.appendChild(div);
+  });
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+async function refreshTicket() {
+  if (!currentTicketId) return;
+  try {
+    const res = await fetch('/api/tickets/' + currentTicketId);
+    if (!res.ok) return;
+    const data = await res.json();
+    renderTicket(data);
+  } catch (err) {
+    // transient network error while polling; ignore and try again next tick
+  }
+}
+
+function showTicket(id) {
+  currentTicketId = id;
+  newTicketCard.style.display = 'none';
+  ticketCard.style.display = 'block';
+  refreshTicket();
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(refreshTicket, 4000);
+}
+
+document.getElementById('reply-send').addEventListener('click', async () => {
+  const textEl = document.getElementById('reply-text');
+  const text = textEl.value.trim();
+  if (!text || !currentTicketId) return;
+  const res = await fetch('/api/tickets/' + currentTicketId + '/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ author: 'customer', text }),
+  });
+  if (res.ok) {
+    textEl.value = '';
+    refreshTicket();
+  }
+});
+
+// Resume an existing ticket if the URL or localStorage points to one.
+const urlTicketId = new URL(window.location).searchParams.get('ticket');
+const savedTicketId = localStorage.getItem('tawlity-ticket-id');
+const resumeId = urlTicketId || savedTicketId;
+if (resumeId) {
+  fetch('/api/tickets/' + resumeId).then((res) => {
+    if (res.ok) showTicket(resumeId);
+  });
+}
+</script>
+</body>
+</html>

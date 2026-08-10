@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tawlity Support &mdash; Agent Dashboard</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="app-header">
+  <h1>Agent Dashboard</h1>
+  <a href="index.html">Customer view &rarr;</a>
+</header>
+
+<div class="layout-two-col">
+  <div class="card">
+    <h2 style="margin-top:0;font-size:16px;">Tickets</h2>
+    <ul id="ticket-list" class="ticket-list"></ul>
+  </div>
+
+  <div class="card" id="detail-card">
+    <p id="no-selection" class="hint">Select a ticket from the list to view it.</p>
+    <div id="detail" style="display:none;">
+      <div class="ticket-meta">
+        <h2>Ticket <span id="d-id"></span> &mdash; <span id="d-subject"></span></h2>
+        <span id="d-status" class="status-badge"></span>
+      </div>
+      <p class="hint" style="margin-top:-8px;">
+        Contact: <span id="d-contact"></span>
+      </p>
+      <div id="messages" class="messages"></div>
+
+      <div class="canned-row">
+        <select id="canned-select">
+          <option value="">Insert a canned response...</option>
+        </select>
+      </div>
+      <div class="reply-row">
+        <textarea id="reply-text" placeholder="Reply to the customer..."></textarea>
+        <button id="reply-send">Send</button>
+      </div>
+      <div style="margin-top:10px; display:flex; gap:8px;">
+        <button id="escalate-btn" class="secondary">Escalate via WhatsApp</button>
+        <button id="resolve-btn" class="secondary">Mark resolved</button>
+      </div>
+      <div id="action-msg" class="hint" style="margin-top:8px;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentTicketId = null;
+let listPollTimer = null;
+let detailPollTimer = null;
+
+function statusClass(status) {
+  return { open: 'status-open', escalated: 'status-escalated', resolved: 'status-resolved' }[status] || 'status-open';
+}
+
+function priorityClass(priority) {
+  return { high: 'priority-high', medium: 'priority-medium', low: 'priority-low' }[priority] || '';
+}
+
+async function loadTickets() {
+  const res = await fetch('/api/tickets');
+  const tickets = await res.json();
+  const list = document.getElementById('ticket-list');
+  const previouslySelected = currentTicketId;
+  list.innerHTML = '';
+  tickets.forEach((t) => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.className = 'ticket-row';
+    a.href = '#';
+    a.dataset.id = t.id;
+    const lastMsg = t.messages[t.messages.length - 1];
+    const tags = [];
+    if (t.category) tags.push(`<span class="tag">${t.category}</span>`);
+    if (t.priority) tags.push(`<span class="tag ${priorityClass(t.priority)}">${t.priority}</span>`);
+    a.innerHTML = `
+      <div class="top-line">
+        <span class="subject">${escapeHtml(t.subject)}</span>
+        <span class="status-badge ${statusClass(t.status)}">${t.status}</span>
+      </div>
+      <div>${tags.join('')}</div>
+      <div class="snippet">${escapeHtml(lastMsg ? lastMsg.text : '')}</div>
+    `;
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      selectTicket(t.id);
+    });
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+  if (previouslySelected) selectTicket(previouslySelected, { silent: true });
+}
+
+function escapeHtml(s) {
+  const div = document.createElement('div');
+  div.textContent = s || '';
+  return div.innerHTML;
+}
+
+async function selectTicket(id, opts) {
+  currentTicketId = id;
+  document.getElementById('no-selection').style.display = 'none';
+  document.getElementById('detail').style.display = 'block';
+  await refreshDetail();
+  if (!opts || !opts.silent) {
+    if (detailPollTimer) clearInterval(detailPollTimer);
+    detailPollTimer = setInterval(refreshDetail, 4000);
+  }
+}
+
+async function refreshDetail() {
+  if (!currentTicketId) return;
+  const res = await fetch('/api/tickets/' + currentTicketId);
+  if (!res.ok) return;
+  const t = await res.json();
+  document.getElementById('d-id').textContent = '#' + t.id;
+  document.getElementById('d-subject').textContent = t.subject;
+  document.getElementById('d-contact').textContent = `${t.contactInfo} (${t.contactType})`;
+  const statusEl = document.getElementById('d-status');
+  statusEl.textContent = t.status;
+  statusEl.className = 'status-badge ' + statusClass(t.status);
+
+  const messagesEl = document.getElementById('messages');
+  messagesEl.innerHTML = '';
+  t.messages.forEach((m) => {
+    const div = document.createElement('div');
+    div.className = 'bubble ' + (m.author === 'agent' ? 'agent' : 'customer');
+    const author = document.createElement('div');
+    author.className = 'author';
+    author.textContent = m.author === 'agent' ? 'You (agent)' : 'Customer';
+    const text = document.createElement('div');
+    text.textContent = m.text;
+    div.appendChild(author);
+    div.appendChild(text);
+    messagesEl.appendChild(div);
+  });
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+document.getElementById('reply-send').addEventListener('click', async () => {
+  const textEl = document.getElementById('reply-text');
+  const text = textEl.value.trim();
+  if (!text || !currentTicketId) return;
+  const res = await fetch('/api/tickets/' + currentTicketId + '/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ author: 'agent', text }),
+  });
+  if (res.ok) {
+    textEl.value = '';
+    refreshDetail();
+    loadTickets();
+  }
+});
+
+document.getElementById('escalate-btn').addEventListener('click', async () => {
+  if (!currentTicketId) return;
+  const msgEl = document.getElementById('action-msg');
+  msgEl.textContent = 'Escalating via WhatsApp...';
+  const res = await fetch('/api/tickets/' + currentTicketId + '/escalate', { method: 'POST' });
+  const data = await res.json();
+  if (res.ok) {
+    msgEl.textContent = 'Escalated. WhatsApp message sent.';
+    refreshDetail();
+    loadTickets();
+  } else {
+    msgEl.textContent = 'Failed to escalate: ' + data.error;
+  }
+});
+
+document.getElementById('resolve-btn').addEventListener('click', async () => {
+  if (!currentTicketId) return;
+  const res = await fetch('/api/tickets/' + currentTicketId + '/resolve', { method: 'POST' });
+  if (res.ok) {
+    refreshDetail();
+    loadTickets();
+  }
+});
+
+loadTickets();
+listPollTimer = setInterval(loadTickets, 6000);
+
+// Open directly to a ticket if linked from a WhatsApp escalation.
+const urlTicketId = new URL(window.location).searchParams.get('ticket');
+if (urlTicketId) {
+  selectTicket(urlTicketId);
+}
+</script>
+</body>
+</html>

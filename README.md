@@ -1,1 +1,148 @@
-# Customer-service-Tawlity
+# Tawlity Support
+
+A small customer service ticketing system for Tawlity (restaurant reservation/discovery,
+Kuwait). Diners and restaurant partners open tickets through a web widget, an agent works
+them from a dashboard, and unresolved tickets escalate to the agent via WhatsApp.
+
+## Architecture
+
+- **Node.js + Express** server (`server.js`) exposing a small JSON API.
+- **JSON-file storage** (`db.js`) — no database. Each "table" is an array in
+  `data/<name>.json`, read/written with `fs`. Writes to the same table are serialized
+  through an in-memory promise queue so two concurrent requests can't tear each other's
+  read-modify-write. This is intentionally simple and is not meant to scale past a single
+  process/machine — see "Before production" below.
+- **Vanilla HTML/CSS/JS frontends** in `public/`, no build step, no framework:
+  - `public/index.html` — the diner/restaurant-facing widget. Submits a ticket, then
+    polls `GET /api/tickets/:id` every 4s to show new agent replies.
+  - `public/agent.html` — the agent dashboard. Lists tickets (polls every 6s), shows a
+    conversation, lets the agent reply, escalate, or resolve.
+- **`whatsapp.js`** — wraps the Meta WhatsApp Cloud API to send a templated escalation
+  message to the on-call agent's phone when a ticket is escalated.
+
+Data model (one row per ticket in `data/tickets.json`):
+
+```
+{
+  id, subject, contactInfo, contactType ('email'|'phone'),
+  status ('open'|'escalated'|'resolved'),
+  category, priority,        // added by the auto-tagging pass, see below
+  createdAt, updatedAt, escalatedAt,
+  messages: [{ id, author ('customer'|'agent'), text, createdAt }]
+}
+```
+
+## Running locally
+
+```
+npm install
+cp .env.example .env   # then fill in the WhatsApp values, see below
+npm start              # or `npm run dev` to auto-restart on file changes
+```
+
+Open `http://localhost:3000` for the widget, `http://localhost:3000/agent.html` for the
+dashboard. There's no auth on either page yet — see "Before production".
+
+## API routes
+
+| Method | Path                        | Purpose                                            |
+|--------|-----------------------------|-----------------------------------------------------|
+| POST   | `/api/tickets`               | Create a ticket. Body: `{ subject, message, contactInfo, contactType }` |
+| GET    | `/api/tickets`                | List all tickets, newest-updated first             |
+| GET    | `/api/tickets/:id`            | Fetch one ticket                                    |
+| POST   | `/api/tickets/:id/messages`   | Append a message. Body: `{ author: 'customer'\|'agent', text }` |
+| POST   | `/api/tickets/:id/escalate`   | Send the WhatsApp escalation, mark ticket `escalated` |
+| POST   | `/api/tickets/:id/resolve`    | Mark ticket `resolved`                              |
+
+## WhatsApp Cloud API setup
+
+Escalation sends a pre-approved WhatsApp **template message** (not a free-form message,
+because you can only free-form message someone who messaged you first within the last 24
+hours — templates are the way to reliably reach the agent).
+
+1. **Create a Meta App**
+   - Go to [developers.facebook.com/apps](https://developers.facebook.com/apps) → Create App →
+     type "Business" → add the **WhatsApp** product.
+   - This gives you a **test phone number** for free, good enough for development.
+
+2. **Get the Phone Number ID**
+   - In the App Dashboard → WhatsApp → API Setup, note the **Phone Number ID** shown under
+     "From" (this is a numeric ID, *not* the phone number itself) → `WHATSAPP_PHONE_NUMBER_ID`.
+
+3. **Add your phone as a tester number (dev mode only)**
+   - Still on API Setup, under "To", click **Manage phone number list** and add the phone
+     that should receive escalations. In dev mode, Meta will only deliver messages to
+     numbers on this list — you'll need to verify it with an SMS/call code.
+   - That verified number, in international format with no leading `+` (e.g.
+     `96550001234`), is `WHATSAPP_TO_NUMBER`.
+
+4. **Get a permanent access token**
+   - The token shown on the API Setup page by default expires in 24 hours — fine for a
+     first test, not for anything longer.
+   - For a permanent token: Meta Business Suite → Business Settings → Users → **System
+     Users** → create a system user → Add Assets → select your WhatsApp app → grant
+     `whatsapp_business_messaging` (and `whatsapp_business_management` if you'll manage
+     templates via API) → **Generate token**, no expiration.
+   - That token is `WHATSAPP_TOKEN`.
+
+5. **Create and approve the `ticket_escalated` template**
+   - App Dashboard → WhatsApp → Message Templates → Create Template.
+   - Category: **Utility**. Name: `ticket_escalated`. Language: match `WHATSAPP_TEMPLATE_LANG`
+     (default `en_US`).
+   - Body, with 4 positional variables:
+     ```
+     New Tawlity support escalation.
+     Ticket #{{1}}: {{2}}
+     Contact: {{3}}
+     Open it: {{4}}
+     ```
+   - Submit for review. Utility templates with plain text are usually approved within
+     minutes to a few hours. You cannot send it until it shows **Approved**.
+
+6. **Fill in `.env`**
+   - `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_TO_NUMBER` from above.
+   - `WHATSAPP_TEMPLATE_NAME` / `WHATSAPP_TEMPLATE_LANG` if you didn't use the defaults.
+   - `DASHBOARD_BASE_URL` — the base URL the agent will open the dashboard link from
+     (`http://localhost:3000` while testing locally; if testing from a phone on the same
+     network, use your machine's LAN IP so the link is actually reachable from the phone).
+
+7. **Test it**: create a ticket through `index.html`, open it in `agent.html`, click
+   **Escalate via WhatsApp**. If it fails, the dashboard shows the actual Graph API error
+   message (not just an HTTP status) — `whatsapp.js` surfaces `error.message`,
+   `error.type`, and `error.code` from the Graph API response. Common causes:
+   - Template not yet approved (or name/language mismatch) → `132001` template not found.
+   - `WHATSAPP_TO_NUMBER` not added as a tester in dev mode → `131030` recipient not in
+     allowed list.
+   - Wrong `WHATSAPP_PHONE_NUMBER_ID` (using the display phone number instead of the ID).
+   - Expired temporary token.
+
+## Before production
+
+This app is deliberately minimal. Before putting it in front of real users:
+
+- **Storage**: `db.js`'s JSON files are fine for one process on one machine. There's no
+  file locking against multiple server instances, no backups, and a large ticket volume
+  will make the "read whole file, rewrite whole file" pattern slow. Move to a real
+  database if/when that becomes a problem — don't do it preemptively.
+- **Auth**: neither `index.html` nor `agent.html` has any authentication. Anyone with the
+  dashboard URL can read/reply to every ticket. Add agent login before deploying.
+- **Widget identity**: ticket creation trusts whatever `contactInfo` the caller sends —
+  there's no verification the diner actually owns that email/phone. Fine for a support
+  widget, but don't use `contactInfo` as an identity claim elsewhere.
+- **Rate limiting / abuse**: `POST /api/tickets` and `/messages` have no rate limiting,
+  so they're open to spam/flooding as-is.
+- **HTTPS**: run behind a reverse proxy (nginx, Caddy, a PaaS) that terminates TLS — the
+  Meta Graph API also requires the `DASHBOARD_BASE_URL` links to be reachable, so this
+  matters for the escalation link too.
+- **Secrets**: `.env` holds a long-lived WhatsApp token; keep it out of git (already
+  gitignored) and out of logs.
+- **WhatsApp 24-hour window**: this app only ever sends the one templated escalation
+  message. If you later want the agent to free-form reply *from* WhatsApp back into a
+  ticket, you're in the 24-hour customer-service window rules and need a webhook
+  receiver — not built here.
+- **Retries / delivery confirmation**: `whatsapp.js` sends once and surfaces failures to
+  the agent in the UI; it doesn't retry or track delivery/read receipts. Add a webhook
+  subscription on the Meta app if you need delivery status.
+- **Template review turnaround**: template edits require re-approval and can take longer
+  than "minutes" outside of simple utility templates — don't assume a template edit is
+  live immediately.
