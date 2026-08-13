@@ -20,9 +20,10 @@ function isConfigured() {
 }
 
 // Sends the ticket_escalated template. The template body is expected to have
-// 4 positional placeholders: {{1}} ticket id, {{2}} subject, {{3}} contact info,
-// {{4}} dashboard link. Throws on failure with the actual Graph API error message
-// (not just the HTTP status) so the caller can show something actionable.
+// 4 named placeholders: {{ticket_id}}, {{subject}}, {{contact_info}}, {{dashboard_link}}
+// (Meta requires named, not positional, variables for newly created templates).
+// Throws on failure with the actual Graph API error message (not just the HTTP
+// status) so the caller can show something actionable.
 async function sendEscalationMessage(ticket) {
   const c = config();
   if (!isConfigured()) {
@@ -45,10 +46,10 @@ async function sendEscalationMessage(ticket) {
         {
           type: 'body',
           parameters: [
-            { type: 'text', text: String(ticket.id) },
-            { type: 'text', text: ticket.subject || '(no subject)' },
-            { type: 'text', text: ticket.contactInfo || 'unknown' },
-            { type: 'text', text: dashboardLink },
+            { type: 'text', parameter_name: 'ticket_id', text: String(ticket.id) },
+            { type: 'text', parameter_name: 'subject', text: ticket.subject || '(no subject)' },
+            { type: 'text', parameter_name: 'contact_info', text: ticket.contactInfo || 'unknown' },
+            { type: 'text', parameter_name: 'dashboard_link', text: dashboardLink },
           ],
         },
       ],

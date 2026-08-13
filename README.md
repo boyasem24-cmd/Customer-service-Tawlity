@@ -76,26 +76,33 @@ hours — templates are the way to reliably reach the agent).
    - That verified number, in international format with no leading `+` (e.g.
      `96550001234`), is `WHATSAPP_TO_NUMBER`.
 
-4. **Get a permanent access token**
-   - The token shown on the API Setup page by default expires in 24 hours — fine for a
-     first test, not for anything longer.
-   - For a permanent token: Meta Business Suite → Business Settings → Users → **System
-     Users** → create a system user → Add Assets → select your WhatsApp app → grant
-     `whatsapp_business_messaging` (and `whatsapp_business_management` if you'll manage
-     templates via API) → **Generate token**, no expiration.
-   - That token is `WHATSAPP_TOKEN`.
+4. **Get an access token**
+   - The token shown on the "Try it out" page is temporary (expires in a matter of
+     hours) but is the only option for a free test WhatsApp Business Account (WABA) —
+     in practice, test WABAs created this way usually **cannot** be assigned to a
+     System User, so `Add Assets → WhatsApp Accounts` may say something like "unable to
+     assign assets right now." That's expected in dev mode, not a bug. A truly permanent,
+     non-expiring token requires a production WABA (real phone number, business
+     verification) — see "Before production" below.
+   - For now: copy the temporary token from the "Try it out" page and use it promptly,
+     since it can expire mid-session. That token is `WHATSAPP_TOKEN`.
 
 5. **Create and approve the `ticket_escalated` template**
-   - App Dashboard → WhatsApp → Message Templates → Create Template.
+   - Template creation lives in **WhatsApp Manager**
+     (`business.facebook.com/wa/manage/message-templates/`), not on the "Try it out"
+     quickstart page (that page can only send Meta's pre-made sample templates).
    - Category: **Utility**. Name: `ticket_escalated`. Language: match `WHATSAPP_TEMPLATE_LANG`
      (default `en_US`).
-   - Body, with 4 positional variables:
+   - Body, with **named** variables — Meta requires snake_case names, not positional
+     `{{1}}`/`{{2}}`, and a variable can't be the last token in the message:
      ```
-     New Tawlity support escalation.
-     Ticket #{{1}}: {{2}}
-     Contact: {{3}}
-     Open it: {{4}}
+     Ticket #{{ticket_id}} was just escalated.
+     Subject: {{subject}}
+     Contact: {{contact_info}}
+     Dashboard link: {{dashboard_link}}
+     Please respond soon.
      ```
+   - Leave Header, Footer, and Buttons empty/None.
    - Submit for review. Utility templates with plain text are usually approved within
      minutes to a few hours. You cannot send it until it shows **Approved**.
 
@@ -114,7 +121,10 @@ hours — templates are the way to reliably reach the agent).
    - `WHATSAPP_TO_NUMBER` not added as a tester in dev mode → `131030` recipient not in
      allowed list.
    - Wrong `WHATSAPP_PHONE_NUMBER_ID` (using the display phone number instead of the ID).
-   - Expired temporary token.
+   - Expired temporary token → `190` authentication error. Get a fresh one from "Try it
+     out" and use it right away.
+   - Token valid but not granted access to the specific WABA/phone number → `100`
+     (subcode `33`), "object does not exist ... or missing permissions."
 
 ## Before production
 
