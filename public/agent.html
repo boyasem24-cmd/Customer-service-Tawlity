@@ -206,6 +206,37 @@ const urlTicketId = new URL(window.location).searchParams.get('ticket');
 if (urlTicketId) {
   selectTicket(urlTicketId);
 }
+
+// --- Canned responses ---
+
+let cannedResponses = [];
+
+async function loadCannedResponses() {
+  const res = await fetch('/api/canned-responses');
+  if (!res.ok) return;
+  cannedResponses = await res.json();
+  const select = document.getElementById('canned-select');
+  cannedResponses.forEach((c) => {
+    const option = document.createElement('option');
+    option.value = c.id;
+    option.textContent = c.label;
+    select.appendChild(option);
+  });
+}
+
+document.getElementById('canned-select').addEventListener('change', (e) => {
+  const canned = cannedResponses.find((c) => c.id === e.target.value);
+  e.target.value = ''; // reset to placeholder so picking the same one twice still fires 'change'
+  if (!canned) return;
+  const textEl = document.getElementById('reply-text');
+  // Drop it into the reply box, editable before sending -- append rather than
+  // replace so it doesn't clobber anything the agent already typed.
+  textEl.value = textEl.value.trim() ? textEl.value.trim() + ' ' + canned.text : canned.text;
+  textEl.focus();
+  textEl.setSelectionRange(textEl.value.length, textEl.value.length);
+});
+
+loadCannedResponses();
 </script>
 </body>
 </html>

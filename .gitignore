@@ -2,3 +2,5 @@ node_modules/
 .env
 data/*.json
 !data/.gitkeep
+# Shipped seed data, not runtime-generated -- keep tracked unlike tickets.json etc.
+!data/canned-responses.json

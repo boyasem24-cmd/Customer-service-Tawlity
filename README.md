@@ -16,7 +16,8 @@ them from a dashboard, and unresolved tickets escalate to the agent via WhatsApp
   - `public/index.html` — the diner/restaurant-facing widget. Submits a ticket, then
     polls `GET /api/tickets/:id` every 4s to show new agent replies.
   - `public/agent.html` — the agent dashboard. Lists tickets (polls every 6s), shows a
-    conversation, lets the agent reply, escalate, or resolve.
+    conversation, lets the agent pick a canned response (editable before sending), reply,
+    escalate, or resolve.
 - **`whatsapp.js`** — wraps the Meta WhatsApp Cloud API. Sends two kinds of templated
   messages: `ticket_escalated` to the on-call agent's phone when a ticket is escalated,
   and `ticket_reply_notification` to the customer when an agent replies (only for
@@ -34,6 +35,11 @@ Data model (one row per ticket in `data/tickets.json`):
   messages: [{ id, author ('customer'|'agent'), text, createdAt }]
 }
 ```
+
+Canned responses (`data/canned-responses.json`, `{ id, label, text }` per row) are seed
+data shipped with the app — unlike `data/tickets.json`, this file **is** committed to
+git. To add or edit one, just edit that file directly and restart the server; there's no
+management UI, since the point was a small curated library, not agent-authored content.
 
 ## Running locally
 
@@ -56,6 +62,7 @@ dashboard. There's no auth on either page yet — see "Before production".
 | POST   | `/api/tickets/:id/messages`   | Append a message. Body: `{ author: 'customer'\|'agent', text }`. If `author` is `agent` and the ticket's contact is a phone number, sends a WhatsApp notification and reports the outcome in the response's `notification` field. |
 | POST   | `/api/tickets/:id/escalate`   | Send the WhatsApp escalation, mark ticket `escalated` |
 | POST   | `/api/tickets/:id/resolve`    | Mark ticket `resolved`                              |
+| GET    | `/api/canned-responses`       | List canned reply templates for the agent dashboard |
 
 ## WhatsApp Cloud API setup
 

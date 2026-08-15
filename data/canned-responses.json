@@ -1,0 +1,10 @@
+[
+  { "id": "checking-restaurant", "label": "Checking with restaurant", "text": "Checking with the restaurant now, one moment please." },
+  { "id": "refund-processed", "label": "Refund processed", "text": "Your refund has been processed and should appear within 3-5 business days." },
+  { "id": "need-screenshot", "label": "Ask for screenshot", "text": "Could you send a screenshot of the error you're seeing? That'll help us track it down faster." },
+  { "id": "reservation-confirmed", "label": "Reservation confirmed", "text": "Good news - your reservation is confirmed. You should also see it reflected in the app now." },
+  { "id": "need-more-info", "label": "Ask for more info", "text": "Thanks for reaching out. Could you share a bit more detail, like the reservation time and restaurant name, so we can look into this?" },
+  { "id": "escalated-notice", "label": "Escalated notice", "text": "I've escalated this to our team and we're looking into it - I'll update you as soon as I hear back." },
+  { "id": "resolved-closing", "label": "Resolved, closing", "text": "Glad we could sort this out! I'll go ahead and close this ticket. Feel free to reach out again if anything else comes up." },
+  { "id": "apology-delay", "label": "Apology for delay", "text": "Sorry for the delay in getting back to you - thanks for your patience." }
+]

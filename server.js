@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 const TICKETS_TABLE = 'tickets';
+const CANNED_RESPONSES_TABLE = 'canned-responses';
 
 function newId() {
   return crypto.randomBytes(4).toString('hex');
@@ -158,6 +159,12 @@ app.post('/api/tickets/:id/resolve', async (req, res) => {
   });
   if (!ticket) return res.status(404).json({ error: 'ticket not found' });
   res.json(ticket);
+});
+
+// --- Canned responses ---
+
+app.get('/api/canned-responses', (req, res) => {
+  res.json(readTable(CANNED_RESPONSES_TABLE));
 });
 
 app.listen(PORT, () => {
