@@ -18,6 +18,11 @@ them from a dashboard, and unresolved tickets escalate to the agent via WhatsApp
   - `public/agent.html` — the agent dashboard. Lists tickets (polls every 6s), shows a
     conversation, lets the agent pick a canned response (editable before sending), reply,
     escalate, or resolve.
+- **`categorize.js`** — rule-based (keyword matching, no LLM/external API) pass over a
+  new ticket's subject + first message, run at creation time to flag a likely
+  `category` and `priority`. Shown as tags in the agent queue so urgency is scannable
+  without opening every ticket. It's a rough heuristic, not a classifier — false
+  positives/negatives are expected and fine for a "scan at a glance" aid.
 - **`whatsapp.js`** — wraps the Meta WhatsApp Cloud API. Sends two kinds of templated
   messages: `ticket_escalated` to the on-call agent's phone when a ticket is escalated,
   and `ticket_reply_notification` to the customer when an agent replies (only for

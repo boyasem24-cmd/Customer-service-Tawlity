@@ -4,6 +4,7 @@ const express = require('express');
 const crypto = require('crypto');
 const { withTable, readTable } = require('./db');
 const whatsapp = require('./whatsapp');
+const { categorizeTicket } = require('./categorize');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,12 +33,16 @@ app.post('/api/tickets', async (req, res) => {
     return res.status(400).json({ error: 'subject, message, and contactInfo are required' });
   }
 
+  const { category, priority } = categorizeTicket(subject, message);
+
   const ticket = {
     id: newId(),
     subject: String(subject).slice(0, 200),
     contactInfo: String(contactInfo).slice(0, 200),
     contactType: contactType === 'phone' ? 'phone' : 'email',
     status: 'open', // open | escalated | resolved
+    category, // 'reservation' | 'app_bug' | 'billing' | 'other'
+    priority, // 'high' | 'medium' | 'low'
     createdAt: now(),
     updatedAt: now(),
     escalatedAt: null,

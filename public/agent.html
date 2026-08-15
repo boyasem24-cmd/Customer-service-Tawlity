@@ -61,6 +61,15 @@ function priorityClass(priority) {
   return { high: 'priority-high', medium: 'priority-medium', low: 'priority-low' }[priority] || '';
 }
 
+function categoryLabel(category) {
+  return {
+    reservation: 'Reservation',
+    billing: 'Billing',
+    app_bug: 'App bug',
+    other: 'Other',
+  }[category] || category;
+}
+
 async function loadTickets() {
   const res = await fetch('/api/tickets');
   const tickets = await res.json();
@@ -75,7 +84,7 @@ async function loadTickets() {
     a.dataset.id = t.id;
     const lastMsg = t.messages[t.messages.length - 1];
     const tags = [];
-    if (t.category) tags.push(`<span class="tag">${t.category}</span>`);
+    if (t.category) tags.push(`<span class="tag">${categoryLabel(t.category)}</span>`);
     if (t.priority) tags.push(`<span class="tag ${priorityClass(t.priority)}">${t.priority}</span>`);
     a.innerHTML = `
       <div class="top-line">
