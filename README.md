@@ -17,8 +17,11 @@ them from a dashboard, and unresolved tickets escalate to the agent via WhatsApp
     polls `GET /api/tickets/:id` every 4s to show new agent replies.
   - `public/agent.html` — the agent dashboard. Lists tickets (polls every 6s), shows a
     conversation, lets the agent reply, escalate, or resolve.
-- **`whatsapp.js`** — wraps the Meta WhatsApp Cloud API to send a templated escalation
-  message to the on-call agent's phone when a ticket is escalated.
+- **`whatsapp.js`** — wraps the Meta WhatsApp Cloud API. Sends two kinds of templated
+  messages: `ticket_escalated` to the on-call agent's phone when a ticket is escalated,
+  and `ticket_reply_notification` to the customer when an agent replies (only for
+  tickets whose `contactType` is `phone` — email contacts aren't notified yet, since
+  that would need a separate email provider; the dashboard flags this when it happens).
 
 Data model (one row per ticket in `data/tickets.json`):
 
@@ -50,7 +53,7 @@ dashboard. There's no auth on either page yet — see "Before production".
 | POST   | `/api/tickets`               | Create a ticket. Body: `{ subject, message, contactInfo, contactType }` |
 | GET    | `/api/tickets`                | List all tickets, newest-updated first             |
 | GET    | `/api/tickets/:id`            | Fetch one ticket                                    |
-| POST   | `/api/tickets/:id/messages`   | Append a message. Body: `{ author: 'customer'\|'agent', text }` |
+| POST   | `/api/tickets/:id/messages`   | Append a message. Body: `{ author: 'customer'\|'agent', text }`. If `author` is `agent` and the ticket's contact is a phone number, sends a WhatsApp notification and reports the outcome in the response's `notification` field. |
 | POST   | `/api/tickets/:id/escalate`   | Send the WhatsApp escalation, mark ticket `escalated` |
 | POST   | `/api/tickets/:id/resolve`    | Mark ticket `resolved`                              |
 
@@ -105,26 +108,61 @@ hours — templates are the way to reliably reach the agent).
    - Leave Header, Footer, and Buttons empty/None.
    - Submit for review. Utility templates with plain text are usually approved within
      minutes to a few hours. You cannot send it until it shows **Approved**.
+   - **Important**: create it under the same WhatsApp Business Account (WABA) your test
+     phone number belongs to. If your Meta account has more than one WABA (easy to end
+     up with by accident — e.g. one from clicking around WhatsApp Manager directly vs.
+     one auto-created by the app's "Try it out" flow), a template created under the
+     wrong one will approve fine but fail to send with error `132001` ("template name
+     does not exist"), because it doesn't exist *for that phone number's WABA*. The
+     "Try it out" / API Setup page shows the correct **WhatsApp Business Account ID**
+     right next to the Phone Number ID — go to WhatsApp Manager via
+     `business.facebook.com/wa/manage/message-templates/?waba_id=<that ID>` to make sure
+     you're creating it in the right place.
 
-6. **Fill in `.env`**
+6. **Create and approve the `ticket_reply_notification` template** (for Task 2 —
+   notifying the customer when an agent replies)
+   - Same place, same WABA as above. Category: **Utility**. Name:
+     `ticket_reply_notification`. Language: English (US) (must match
+     `WHATSAPP_REPLY_TEMPLATE_LANG`, default `en_US` — picking plain "English" instead
+     of "English (US)" saves as language code `en`, not `en_US`, and sending will fail
+     the same way as a WABA mismatch does).
+   - Body:
+     ```
+     Tawlity Support: new reply on ticket #{{ticket_id}}.
+     {{agent_message}}
+     View conversation: {{ticket_link}}
+     Reply anytime.
+     ```
+   - Submit and wait for **Approved**.
+
+7. **Fill in `.env`**
    - `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_TO_NUMBER` from above.
    - `WHATSAPP_TEMPLATE_NAME` / `WHATSAPP_TEMPLATE_LANG` if you didn't use the defaults.
+   - `WHATSAPP_REPLY_TEMPLATE_NAME` / `WHATSAPP_REPLY_TEMPLATE_LANG` if you didn't use
+     the defaults.
    - `DASHBOARD_BASE_URL` — the base URL the agent will open the dashboard link from
      (`http://localhost:3000` while testing locally; if testing from a phone on the same
      network, use your machine's LAN IP so the link is actually reachable from the phone).
 
-7. **Test it**: create a ticket through `index.html`, open it in `agent.html`, click
+8. **Test it**: create a ticket through `index.html`, open it in `agent.html`, click
    **Escalate via WhatsApp**. If it fails, the dashboard shows the actual Graph API error
    message (not just an HTTP status) — `whatsapp.js` surfaces `error.message`,
    `error.type`, and `error.code` from the Graph API response. Common causes:
    - Template not yet approved (or name/language mismatch) → `132001` template not found.
+   - Template exists but was created under a different WABA than the phone number
+     belongs to → also `132001` — see the note in step 5.
    - `WHATSAPP_TO_NUMBER` not added as a tester in dev mode → `131030` recipient not in
      allowed list.
    - Wrong `WHATSAPP_PHONE_NUMBER_ID` (using the display phone number instead of the ID).
    - Expired temporary token → `190` authentication error. Get a fresh one from "Try it
      out" and use it right away.
    - Token valid but not granted access to the specific WABA/phone number → `100`
-     (subcode `33`), "object does not exist ... or missing permissions."
+     (subcode `33`), "object does not exist ... or missing permissions." Free test WABAs
+     usually can't be assigned to a System User at all — see step 4.
+   - To test the reply notification specifically: create a ticket through `index.html`
+     with **phone** selected as the contact method, using a number added as a tester,
+     then reply as the agent in `agent.html` — the dashboard reports whether the
+     WhatsApp notification succeeded right after you send.
 
 ## Before production
 
@@ -141,6 +179,14 @@ This app is deliberately minimal. Before putting it in front of real users:
   widget, but don't use `contactInfo` as an identity claim elsewhere.
 - **Rate limiting / abuse**: `POST /api/tickets` and `/messages` have no rate limiting,
   so they're open to spam/flooding as-is.
+- **Email contacts aren't notified**: reply notifications only work for tickets whose
+  `contactInfo` is a phone number. Diners/restaurants who gave an email address won't
+  hear about agent replies except by having the widget open (Task 2 as originally
+  scoped only covered picking one channel — email would need a separate provider).
+- **Production WABA/phone number**: sending real customer notifications (not just to
+  testers) requires moving past the free test WABA to a production WhatsApp Business
+  Account with a real phone number and business verification — see step 2 in the setup
+  above.
 - **HTTPS**: run behind a reverse proxy (nginx, Caddy, a PaaS) that terminates TLS — the
   Meta Graph API also requires the `DASHBOARD_BASE_URL` links to be reachable, so this
   matters for the escalation link too.

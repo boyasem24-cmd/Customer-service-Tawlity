@@ -150,12 +150,29 @@ document.getElementById('reply-send').addEventListener('click', async () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ author: 'agent', text }),
   });
+  const data = await res.json().catch(() => null);
   if (res.ok) {
     textEl.value = '';
     refreshDetail();
     loadTickets();
+    showNotificationStatus(data && data.notification);
   }
 });
+
+function showNotificationStatus(notification) {
+  const msgEl = document.getElementById('action-msg');
+  if (!notification || !notification.attempted) {
+    if (notification && notification.skippedReason) {
+      msgEl.textContent = 'Reply sent. ' + notification.skippedReason;
+    } else {
+      msgEl.textContent = 'Reply sent.';
+    }
+  } else if (notification.sent) {
+    msgEl.textContent = 'Reply sent. Customer notified via WhatsApp.';
+  } else {
+    msgEl.textContent = 'Reply sent, but the WhatsApp notification failed: ' + notification.error;
+  }
+}
 
 document.getElementById('escalate-btn').addEventListener('click', async () => {
   if (!currentTicketId) return;

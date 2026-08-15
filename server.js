@@ -96,7 +96,28 @@ app.post('/api/tickets/:id/messages', async (req, res) => {
   });
 
   if (!ticket) return res.status(404).json({ error: 'ticket not found' });
-  res.status(201).json(ticket);
+
+  // Let the customer know an agent replied. Best-effort: a notification failure
+  // shouldn't undo the reply that was already saved, so it's reported alongside
+  // the ticket rather than turning this into an error response.
+  let notification = { attempted: false };
+  if (author === 'agent') {
+    if (whatsapp.canNotifyByWhatsApp(ticket)) {
+      notification.attempted = true;
+      try {
+        await whatsapp.sendReplyNotification(ticket, text);
+        notification.sent = true;
+      } catch (err) {
+        console.error('WhatsApp reply notification failed:', err.message);
+        notification.sent = false;
+        notification.error = err.message;
+      }
+    } else if (ticket.contactType === 'email') {
+      notification.skippedReason = 'Email notifications are not set up yet.';
+    }
+  }
+
+  res.status(201).json({ ...ticket, notification });
 });
 
 // Escalate a ticket to the on-call agent via WhatsApp.
