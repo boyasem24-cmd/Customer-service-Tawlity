@@ -1,6 +1,6 @@
 ---
 name: es-entries
-description: Use when the user asks for ES (E-mini S&P 500 futures) or SPY trade entries, setups, or a "current read" — e.g. "give me ES entries", "any SPY setups right now", "run the ES study", "check the PotterBox". Runs es_study.py to backtest the PotterBox and six structural rules against fresh data, then reports whether anything is live right now and whether that rule has historical, statistically-validated edge.
+description: Use when the user asks for a one-off ES (E-mini S&P 500 futures) or SPY trade entry, setup, or "current read" — e.g. "give me ES entries", "any SPY setups right now", "run the ES study", "check the PotterBox". Runs es_study.py to backtest the PotterBox and six structural rules against fresh data, then reports whether anything is live right now and whether that rule has historical, statistically-validated edge. For ongoing/recurring monitoring instead of a single check (e.g. "watch ES", "monitor for setups", "alert me"), use the es-monitor skill instead.
 ---
 
 # ES / SPY entries
