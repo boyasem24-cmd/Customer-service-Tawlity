@@ -14,6 +14,11 @@ STUDY 1  PotterBox cost-basis rule (the PDF)
            bounce a boundary, clear the 50%, reach the far side
 STUDY 2  Six structural rules (close location, rejection, acceptance,
            VWAP, midpoint, 50 EMA) scored on forward returns
+CURRENT READ  what's live right now: any open PotterBox signal, plus
+           which structural rules are firing on the last bar - each one
+           tagged VALIDATED or not against STUDY 2's significance test.
+           This section is only as fresh as the data you fed it; re-run
+           with current data before treating it as "right now".
 
 Both report against an empirical null built by shuffling your own data,
 because analytic nulls hid two biases in earlier versions of this code:
@@ -199,7 +204,7 @@ RULES = {"A": "close location (top/bot quartile)",
          "F": "touches 50 EMA"}
 
 
-def study2(bars, horizons=(1, 3, 5, 10), draws=2000):
+def compute_signals(bars):
     n = len(bars)
     e50 = ema([b["c"] for b in bars], 50)
     S = {k: [0]*n for k in RULES}
@@ -219,7 +224,12 @@ def study2(bars, horizons=(1, 3, 5, 10), draws=2000):
         S["D"][i] = 1 if b["c"] > vwap else -1
         S["E"][i] = 1 if b["c"] > (hi+lo)/2 else -1
         S["F"][i] = (1 if b["c"] > e50[i] else -1) if b["l"] <= e50[i] <= b["h"] else 0
+    return S
 
+
+def study2(bars, horizons=(1, 3, 5, 10), draws=2000):
+    n = len(bars)
+    S = compute_signals(bars)
     rnd, results = random.Random(5), []
     for key in RULES:
         for h in horizons:
@@ -240,6 +250,111 @@ def study2(bars, horizons=(1, 3, 5, 10), draws=2000):
             p = (sum(1 for x in nulls if abs(x) >= abs(m)) + 1)/(draws+1)
             results.append((key, h, len(sig), m, mean(nulls), p))
     return results
+
+
+# ------------------------------------------------------------- current read
+
+def potterbox_live(bars, bxs, horizon=20, tol=0.02):
+    """State of the most recent box: is a signal live right now, or what
+    are we waiting on. Mirrors study1()'s walk but stops at the present
+    instead of requiring a resolved win/loss."""
+    if not bxs:
+        return None
+    bx = bxs[-1]
+    n = len(bars)
+    if bx["form"] >= n - 1:
+        return {"state": "box just formed, no bars since", "box": bx}
+
+    last, prev = None, bars[bx["form"]]["c"]
+    for i in range(bx["form"]+1, n):
+        b = bars[i]
+        t_ = tol * bx["rng"]
+        if not (bx["lo"] - t_ <= b["c"] <= bx["hi"] + t_):
+            return {"state": "box invalidated (closed outside range)", "box": bx}
+        side = ("long" if last == "low" and prev <= bx["cb"] < b["c"] else
+                "short" if last == "high" and prev >= bx["cb"] > b["c"] else None)
+        if side:
+            fill = b["c"]
+            tgt, stp = ((bx["hi"], bx["lo"]) if side == "long"
+                        else (bx["lo"], bx["hi"]))
+            bars_since = (n - 1) - i
+            if bars_since >= horizon:
+                return {"state": "signal fired and already expired", "box": bx}
+            for j in range(i+1, n):
+                x = bars[j]
+                ht = x["h"] >= tgt if side == "long" else x["l"] <= tgt
+                hs = x["l"] <= stp if side == "long" else x["h"] >= stp
+                if ht or hs:
+                    outcome = "target hit" if ht and not hs else "stop hit"
+                    return {"state": f"signal already resolved ({outcome})",
+                            "box": bx, "side": side}
+            return {"state": "LIVE SIGNAL", "side": side, "entry": fill,
+                    "target": tgt, "stop": stp,
+                    "bars_left": horizon - bars_since, "box": bx}
+        if b["l"] <= bx["lo"] + t_: last = "low"
+        if b["h"] >= bx["hi"] - t_: last = "high"
+        prev = b["c"]
+    state = "inside box, waiting for a boundary touch" if last is None else \
+            f"touched the {last}, waiting for a 50% cross to arm"
+    return {"state": state, "box": bx, "last_touch": last}
+
+
+def latest_signals(bars, res2, alpha, px):
+    """Which of the six structural rules are firing on the most recent bar,
+    with each one's own historical significance attached."""
+    S = compute_signals(bars)
+    i = len(bars) - 1
+    out = []
+    for key in RULES:
+        d = S[key][i]
+        if d == 0:
+            continue
+        rows = [x for x in res2 if x[0] == key]
+        if not rows:
+            continue
+        _, h, n_, m, _, p = min(rows, key=lambda x: x[5])
+        out.append({"rule": key, "desc": RULES[key], "dir": "long" if d > 0 else "short",
+                     "h": h, "n": n_, "p": p, "significant": p < alpha,
+                     "edge_pts": (math.exp(m) - 1) * px})
+    return out
+
+
+def print_entries(bars, bxs, res2, alpha, px, horizon):
+    print("=" * 78)
+    print(f"CURRENT READ   as of {bars[-1]['d']}   close {px:.2f}")
+    print("=" * 78)
+
+    live = potterbox_live(bars, bxs, horizon)
+    if live is None:
+        print(" PotterBox   no boxes formed yet in this sample")
+    else:
+        bx = live["box"]
+        print(f" PotterBox   box [{bx['lo']:.2f} - {bx['hi']:.2f}]  "
+              f"mid {bx['cb']:.2f}  formed {bars[bx['form']]['d']}")
+        if live["state"] == "LIVE SIGNAL":
+            print(f"   >> LIVE {live['side'].upper()} @ {live['entry']:.2f}   "
+                  f"target {live['target']:.2f}   stop {live['stop']:.2f}   "
+                  f"({live['bars_left']} bars left in horizon)")
+        else:
+            print(f"   {live['state']}")
+
+    sig = latest_signals(bars, res2, alpha, px)
+    print("\n Structural rules firing on the last bar:")
+    if not sig:
+        print("   none")
+    for s in sig:
+        flag = "VALIDATED" if s["significant"] else "not significant"
+        print(f"   {s['rule']} {s['desc']:<36} -> {s['dir']:<5}  "
+              f"(h={s['h']}d n={s['n']} p={s['p']:.4f}  "
+              f"hist. edge {s['edge_pts']:+.1f} pts)  [{flag}]")
+
+    print()
+    print("This is a backtested statistical read on your own data, not a")
+    print("trade recommendation. 'VALIDATED' means the rule cleared its")
+    print("Bonferroni-corrected significance bar in STUDY 2 above - it does")
+    print("not mean it will work on the next trade. Rows marked 'not")
+    print("significant' fired historically but were indistinguishable from")
+    print("noise; size and risk accordingly.")
 
 
 # ------------------------------------------------------------------ main
@@ -329,6 +444,10 @@ def main():
     print("beats its own shuffled null AND clears the breakeven implied by its")
     print("actual reward/risk. Both checks exist because earlier versions of")
     print("this code manufactured edge that wasn't there.")
+    print()
+
+    # ---- current read (only meaningful with fresh, up-to-date data)
+    print_entries(bars, bxs, res, alpha, px, a.horizon)
 
 
 if __name__ == "__main__":
