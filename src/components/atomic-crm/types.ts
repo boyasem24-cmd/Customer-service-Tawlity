@@ -72,6 +72,34 @@ export type Company = {
   context_links?: string[];
   nb_contacts?: number;
   nb_deals?: number;
+
+  // Tawlity restaurant fields
+  is_holding?: boolean;
+  parent_company_id?: Identifier | null;
+  parent_company_name?: string | null;
+  nb_brands?: number;
+  cuisines?: string[];
+  governorate?: string | null;
+  area?: string | null;
+  nb_branches?: number | null;
+  seating_capacity?: number | null;
+  price_range?: string | null;
+  booking_system?: string | null;
+  kga_member?: boolean;
+  instagram_handle?: string | null;
+  google_maps_url?: string | null;
+  lead_source?: string | null;
+  account_status?: string | null;
+
+  // Tawlity account management
+  contract_start_date?: string | null;
+  renewal_date?: string | null;
+  plan?: string | null;
+  monthly_fee?: number | null;
+  onboarding_checklist?: Partial<Record<string, boolean>> | null;
+  last_report_sent_at?: string | null;
+  health?: string | null;
+  health_note?: string | null;
 } & Pick<RaRecord, "id">;
 
 export type EmailAndType = {
@@ -103,6 +131,11 @@ export type Contact = {
   phone_jsonb: PhoneNumberAndType[];
   nb_tasks?: number;
   company_name?: string;
+
+  // Tawlity restaurant contact fields
+  role?: string | null;
+  preferred_language?: string | null;
+  is_decision_maker?: boolean;
 } & Pick<RaRecord, "id">;
 
 export type ContactNote = {
@@ -128,6 +161,11 @@ export type Deal = {
   expected_closing_date: string;
   sales_id: Identifier;
   index: number;
+
+  // Tawlity pipeline fields (`amount` holds the monthly fee in KWD)
+  plan?: string | null;
+  nb_branches_covered?: number | null;
+  lost_reason?: string | null;
 } & Pick<RaRecord, "id">;
 
 export type DealNote = {
@@ -139,6 +177,50 @@ export type DealNote = {
 
   // This is defined for compatibility with `ContactNote`
   status?: undefined;
+} & Pick<RaRecord, "id">;
+
+/* ---------- Diners (B2C users of the Tawlity app) ---------- */
+
+export type Diner = {
+  first_name: string;
+  last_name: string;
+  /** Unique, stored as "+965 XXXX XXXX" */
+  phone: string;
+  /** Digits of `phone`, maintained by the backend for search */
+  phone_digits?: string;
+  email?: string | null;
+  preferred_language?: string | null;
+  gender?: string | null;
+  signup_date?: string | null;
+  signup_platform?: string | null;
+  acquisition_source?: string | null;
+  total_reservations: number;
+  total_no_shows: number;
+  total_cancellations: number;
+  last_booking_date?: string | null;
+  favourite_restaurant_ids: Identifier[];
+  whatsapp_consent: boolean;
+  whatsapp_consent_date?: string | null;
+  status: string;
+  tags: Identifier[];
+  created_at?: string;
+  updated_at?: string;
+} & Pick<RaRecord, "id">;
+
+export type DinerTag = {
+  name: string;
+  color: string;
+} & Pick<RaRecord, "id">;
+
+export type DinerNote = {
+  diner_id: Identifier;
+  text: string;
+  date: string;
+  sales_id?: Identifier;
+  /** "note" for a plain note, "support" for a support interaction */
+  kind: string;
+  /** For support interactions: "open" or "resolved" */
+  support_status?: string | null;
 } & Pick<RaRecord, "id">;
 
 export type Tag = {

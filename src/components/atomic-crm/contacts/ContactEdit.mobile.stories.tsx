@@ -58,7 +58,7 @@ export const ContactEditWithEmailsAndPhones = ({
         buildContact({
           id: 1,
           email_jsonb: [{ email: "ada@example.com", type: "Work" }],
-          phone_jsonb: [{ number: "0123456789", type: "Work" }],
+          phone_jsonb: [{ number: "+965 2233 4455", type: "Work" }],
         }),
       ],
     }}

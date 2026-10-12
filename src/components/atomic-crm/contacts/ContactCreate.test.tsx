@@ -12,7 +12,7 @@ describe("ContactCreate", () => {
 
     await expect.element(screen.getByPlaceholder("Email")).toBeInTheDocument();
     await expect
-      .element(screen.getByPlaceholder("Phone number"))
+      .element(screen.getByPlaceholder("+965 1234 5678"))
       .toBeInTheDocument();
   });
 
@@ -110,7 +110,7 @@ describe("ContactCreate", () => {
 
     // Fill both email and phone
     await screen.getByPlaceholder("Email").fill("ada@example.com");
-    await screen.getByPlaceholder("Phone number").fill("+1234567890");
+    await screen.getByPlaceholder("+965 1234 5678").fill("+96512345678");
 
     await screen.getByRole("button", { name: /^save$/i }).click();
 
@@ -121,7 +121,7 @@ describe("ContactCreate", () => {
       expect.objectContaining({
         data: expect.objectContaining({
           email_jsonb: [{ email: "ada@example.com", type: "Work" }],
-          phone_jsonb: [{ number: "+1234567890", type: "Work" }],
+          phone_jsonb: [{ number: "+965 1234 5678", type: "Work" }],
         }),
       }),
     );

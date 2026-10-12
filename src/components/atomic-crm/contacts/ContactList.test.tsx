@@ -23,10 +23,14 @@ describe("ContactList", () => {
   it("renders an invite to create the first contact when the app is empty", async () => {
     const screen = await render(<DesktopEmpty />);
     await expect
-      .element(screen.getByRole("heading", { name: "No contacts found" }))
+      .element(
+        screen.getByRole("heading", { name: "No restaurant contacts found" }),
+      )
       .toBeInTheDocument();
     await expect
-      .element(screen.getByText("It seems your contact list is empty."))
+      .element(
+        screen.getByText("It seems your restaurant contact list is empty."),
+      )
       .toBeVisible();
   });
 
@@ -36,7 +40,9 @@ describe("ContactList", () => {
     await expect.element(screen.getByText("Ada Lovelace")).toBeVisible();
     await expect.element(screen.getByText("Grace Hopper")).toBeVisible();
     await expect
-      .element(screen.getByRole("heading", { name: "No contacts found" }))
+      .element(
+        screen.getByRole("heading", { name: "No restaurant contacts found" }),
+      )
       .not.toBeInTheDocument();
   });
 
@@ -142,7 +148,9 @@ describe("ContactList", () => {
     await screen.getByRole("button", { name: "Import CSV" }).click();
 
     await expect
-      .element(screen.getByRole("heading", { name: "Import contacts" }))
+      .element(
+        screen.getByRole("heading", { name: "Import restaurant contacts" }),
+      )
       .toBeVisible();
     await expect
       .element(screen.getByLabelText("Resource"))

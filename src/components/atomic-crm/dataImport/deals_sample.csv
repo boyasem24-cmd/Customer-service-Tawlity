@@ -1,3 +1,4 @@
-name,company,category,stage,amount,expected_closing_date,description
-New website,Acme,Website design,Opportunity,12000,2026-09-30,Redesign of the public website
-Print campaign,Globex,Print project,Proposal Sent,4500,2026-10-15,
+name,company,stage,plan,amount,nb_branches_covered,expected_closing_date,lost_reason,description
+Pro plan,Bait Al Najdi,Demo done,pro,45.000,1,2026-11-30,,Wants the waitlist for Ramadan
+Group plan,Gulf Table Group,Negotiation,group_enterprise,120.000,8,2026-12-15,,All brands under one contract
+Starter plan,Shawarma Station,Lost,starter,25.000,1,2026-10-15,price,

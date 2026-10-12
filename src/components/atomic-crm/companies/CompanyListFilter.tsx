@@ -1,22 +1,28 @@
-import { Building, Truck, Users } from "lucide-react";
+import {
+  BadgeCheck,
+  Building2,
+  MapPin,
+  Megaphone,
+  Users,
+  UtensilsCrossed,
+} from "lucide-react";
 import { FilterLiveForm, useGetIdentity, useTranslate } from "ra-core";
 import { ToggleFilterButton } from "@/components/admin/toggle-filter-button";
 import { SearchInput } from "@/components/admin/search-input";
 
 import { FilterCategory } from "../filters/FilterCategory";
-import { useConfigurationContext } from "../root/ConfigurationContext";
 import { AccountManagerFilter } from "../sales/AccountManagerInput";
-import { getTranslatedCompanySizeLabel } from "./getTranslatedCompanySizeLabel";
-import { sizes } from "./sizes";
+import {
+  accountStatusChoices,
+  cuisineChoices,
+  governorateChoices,
+  leadSourceChoices,
+} from "../tawlity/choices";
+import { AccountStatusBadge } from "../tawlity/ChoiceLabel";
 
 export const CompanyListFilter = () => {
   const { identity } = useGetIdentity();
-  const { companySectors } = useConfigurationContext();
   const translate = useTranslate();
-  const translatedSizes = sizes.map((size) => ({
-    ...size,
-    name: getTranslatedCompanySizeLabel(size, translate),
-  }));
   return (
     <div className="w-52 min-w-52 flex flex-col gap-8">
       <FilterLiveForm>
@@ -24,31 +30,70 @@ export const CompanyListFilter = () => {
       </FilterLiveForm>
 
       <FilterCategory
-        icon={<Building className="h-4 w-4" />}
-        label="resources.companies.fields.size"
+        icon={<BadgeCheck className="h-4 w-4" />}
+        label="resources.companies.fields.account_status"
       >
-        {translatedSizes.map((size) => (
+        {accountStatusChoices.map((choice) => (
           <ToggleFilterButton
             className="w-full justify-between"
-            label={size.name}
-            key={size.name}
-            value={{ size: size.id }}
+            label={<AccountStatusBadge status={choice.id} />}
+            key={choice.id}
+            value={{ account_status: choice.id }}
           />
         ))}
       </FilterCategory>
 
       <FilterCategory
-        icon={<Truck className="h-4 w-4" />}
-        label="resources.companies.fields.sector"
+        icon={<MapPin className="h-4 w-4" />}
+        label="resources.companies.fields.governorate"
       >
-        {companySectors.map((sector) => (
+        {governorateChoices.map((choice) => (
           <ToggleFilterButton
             className="w-full justify-between"
-            label={sector.label}
-            key={sector.value}
-            value={{ sector: sector.value }}
+            label={choice.name}
+            key={choice.id}
+            value={{ governorate: choice.id }}
           />
         ))}
+      </FilterCategory>
+
+      <FilterCategory
+        icon={<UtensilsCrossed className="h-4 w-4" />}
+        label="resources.companies.fields.cuisines"
+      >
+        {cuisineChoices.map((choice) => (
+          <ToggleFilterButton
+            className="w-full justify-between"
+            label={choice.name}
+            key={choice.id}
+            value={{ "cuisines@cs": `{${choice.id}}` }}
+          />
+        ))}
+      </FilterCategory>
+
+      <FilterCategory
+        icon={<Megaphone className="h-4 w-4" />}
+        label="resources.companies.fields.lead_source"
+      >
+        {leadSourceChoices.map((choice) => (
+          <ToggleFilterButton
+            className="w-full justify-between"
+            label={choice.name}
+            key={choice.id}
+            value={{ lead_source: choice.id }}
+          />
+        ))}
+      </FilterCategory>
+
+      <FilterCategory
+        icon={<Building2 className="h-4 w-4" />}
+        label="resources.companies.holding_company"
+      >
+        <ToggleFilterButton
+          className="w-full justify-between"
+          label="resources.companies.filters.holdings_only"
+          value={{ is_holding: true }}
+        />
       </FilterCategory>
 
       <FilterCategory

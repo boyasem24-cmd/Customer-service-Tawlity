@@ -4,7 +4,15 @@ import { useDataProvider, useGetIdentity, type DataProvider } from "ra-core";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { useCompanyResolver } from "./useCompanyResolver";
 import { createEachRow } from "./createEachRow";
-import { toConfiguredValue, toInteger, toIsoDate, toText } from "./parseCell";
+import {
+  toChoiceId,
+  toConfiguredValue,
+  toInteger,
+  toIsoDate,
+  toKwd,
+  toText,
+} from "./parseCell";
+import { lostReasonChoices, planChoices } from "../tawlity/choices";
 import type { ImportRow, ProcessImportBatch } from "./types";
 
 /** One CSV row, with the values needed before its deal can be created. */
@@ -58,8 +66,11 @@ export function useDealImport(): ProcessImportBatch {
               category: toConfiguredValue(row.category, dealCategories),
               stage,
               description: toText(row.description),
-              // amount lands in a bigint column, which rejects "4500.50"
-              amount: toInteger(row.amount),
+              // amount is the monthly fee in KWD: a numeric(12,3) column
+              amount: toKwd(row.amount),
+              plan: toChoiceId(row.plan, planChoices),
+              nb_branches_covered: toInteger(row.nb_branches_covered),
+              lost_reason: toChoiceId(row.lost_reason, lostReasonChoices),
               expected_closing_date: toIsoDate(row.expected_closing_date),
               sales_id: identity?.id,
               index: indexes.get(row) ?? 0,

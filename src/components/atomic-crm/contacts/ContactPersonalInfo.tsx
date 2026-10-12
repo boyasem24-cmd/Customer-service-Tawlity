@@ -4,7 +4,7 @@ import { ArrayField } from "@/components/admin/array-field";
 import { SingleFieldList } from "@/components/admin/single-field-list";
 import { TextField } from "@/components/admin/text-field";
 import { EmailField } from "@/components/admin/email-field";
-import { Mail, Phone, Linkedin, Check } from "lucide-react";
+import { Mail, Phone, Linkedin, Check, Star } from "lucide-react";
 import type { ReactNode } from "react";
 import {
   contactGender,
@@ -12,6 +12,42 @@ import {
   translatePersonalInfoTypeLabel,
 } from "./contactModel";
 import type { Contact } from "../types";
+import { useChoiceLabel } from "../tawlity/ChoiceLabel";
+import { contactRoleChoices, languageChoices } from "../tawlity/choices";
+
+const RestaurantContactInfo = ({ record }: { record: Contact }) => {
+  const translate = useTranslate();
+  const roleLabel = useChoiceLabel(contactRoleChoices);
+  const languageLabel = useChoiceLabel(languageChoices);
+  if (!record.role && !record.preferred_language && !record.is_decision_maker)
+    return null;
+  return (
+    <div className="flex flex-col gap-1 pt-2 text-sm">
+      {record.role ? (
+        <div>
+          <span className="text-muted-foreground">
+            {translate("resources.contacts.fields.role")}:{" "}
+          </span>
+          {roleLabel(record.role)}
+        </div>
+      ) : null}
+      {record.is_decision_maker ? (
+        <div className="flex items-center gap-1 text-amber-700">
+          <Star className="w-4 h-4" />
+          {translate("resources.contacts.fields.is_decision_maker")}
+        </div>
+      ) : null}
+      {record.preferred_language ? (
+        <div>
+          <span className="text-muted-foreground">
+            {translate("resources.contacts.fields.preferred_language")}:{" "}
+          </span>
+          {languageLabel(record.preferred_language)}
+        </div>
+      ) : null}
+    </div>
+  );
+};
 
 export const ContactPersonalInfo = () => {
   const record = useRecordContext<Contact>();
@@ -58,6 +94,7 @@ export const ContactPersonalInfo = () => {
           />
         </SingleFieldList>
       </ArrayField>
+      <RestaurantContactInfo record={record} />
       {contactGender
         .map((genderOption) => {
           if (record.gender === genderOption.value) {

@@ -19,6 +19,11 @@ import type { Company } from "../types";
 import { getTranslatedCompanySizeLabel } from "./getTranslatedCompanySizeLabel";
 import { sizes } from "./sizes";
 import { useGetSalesName } from "../sales/useGetSalesName";
+import {
+  HoldingInfo,
+  RestaurantInfo,
+  RestaurantLocationInfo,
+} from "./RestaurantInfo";
 
 interface CompanyAsideProps {
   link?: string;
@@ -39,9 +44,13 @@ export const CompanyAside = ({ link = "edit" }: CompanyAsideProps) => {
         )}
       </div>
 
+      <RestaurantInfo record={record} />
+
+      <HoldingInfo record={record} />
+
       <CompanyInfo record={record} />
 
-      <AddressInfo record={record} />
+      <RestaurantLocationInfo record={record} />
 
       <ContextInfo record={record} />
 
@@ -109,7 +118,12 @@ export const CompanyInfo = ({ record }: { record: Company }) => {
 export const ContextInfo = ({ record }: { record: Company }) => {
   const { companySectors } = useConfigurationContext();
   const translate = useTranslate();
-  if (!record.revenue && !record.id) {
+  if (
+    !record.sector &&
+    !record.size &&
+    !record.revenue &&
+    !record.tax_identifier
+  ) {
     return null;
   }
 

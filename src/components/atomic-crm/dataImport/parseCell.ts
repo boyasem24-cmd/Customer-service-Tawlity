@@ -67,3 +67,24 @@ export const toConfiguredValue = (
       option.label.toLowerCase() === text,
   )?.value;
 };
+
+/** Cell content as a KWD amount, rounded to the fils (3 decimals). */
+export const toKwd = (cell: ImportCell): number | undefined => {
+  const value = toNumber(cell);
+  return value === undefined ? undefined : Math.round(value * 1000) / 1000;
+};
+
+/**
+ * Cell content matched against Tawlity choices by id, loosely: "Free trial",
+ * "free-trial" and "free_trial" all match the `free_trial` choice.
+ */
+export const toChoiceId = (
+  cell: ImportCell,
+  choices: { id: string }[],
+): string | undefined => {
+  const text = toText(cell)
+    ?.toLowerCase()
+    .replace(/[\s-/]+/g, "_");
+  if (text === undefined) return undefined;
+  return choices.find((choice) => choice.id.toLowerCase() === text)?.id;
+};

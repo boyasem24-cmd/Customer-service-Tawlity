@@ -8,7 +8,7 @@ import lightModeLogo from "./logos/logo_atomic_crm_light.svg";
 export const defaultDarkModeLogo = darkModeLogo;
 export const defaultLightModeLogo = lightModeLogo;
 
-export const defaultCurrency = "USD";
+export const defaultCurrency = "KWD";
 
 export const defaultTitle = "Atomic CRM";
 
@@ -26,16 +26,20 @@ export const defaultCompanySectors = [
   { value: "utilities", label: "Utilities" },
 ];
 
+// Restaurant onboarding pipeline
 export const defaultDealStages = [
-  { value: "opportunity", label: "Opportunity" },
-  { value: "proposal-sent", label: "Proposal Sent" },
-  { value: "in-negociation", label: "In Negotiation" },
-  { value: "won", label: "Won" },
+  { value: "lead", label: "Lead" },
+  { value: "visited", label: "Visited" },
+  { value: "demo-done", label: "Demo done" },
+  { value: "trial", label: "Trial" },
+  { value: "negotiation", label: "Negotiation" },
+  { value: "signed", label: "Signed" },
+  { value: "live", label: "Live" },
   { value: "lost", label: "Lost" },
-  { value: "delayed", label: "Delayed" },
 ];
 
-export const defaultDealPipelineStatuses = ["won"];
+// Stages counted as won (signed or live)
+export const defaultDealPipelineStatuses = ["signed", "live"];
 
 export const defaultDealCategories = [
   { value: "other", label: "Other" },
@@ -53,15 +57,13 @@ export const defaultNoteStatuses = [
 ];
 
 export const defaultTaskTypes = [
-  { value: "none", label: "None" },
-  { value: "email", label: "Email" },
-  { value: "demo", label: "Demo" },
-  { value: "lunch", label: "Lunch" },
-  { value: "meeting", label: "Meeting" },
-  { value: "follow-up", label: "Follow-up" },
-  { value: "thank-you", label: "Thank you" },
-  { value: "ship", label: "Ship" },
+  { value: "visit", label: "Visit" },
   { value: "call", label: "Call" },
+  { value: "whatsapp", label: "WhatsApp follow-up" },
+  { value: "demo", label: "Demo" },
+  { value: "onboarding", label: "Onboarding/Training" },
+  { value: "monthly-report", label: "Send monthly report" },
+  { value: "contract-renewal", label: "Contract renewal" },
 ];
 
 export const defaultConfiguration: ConfigurationContextValue = {

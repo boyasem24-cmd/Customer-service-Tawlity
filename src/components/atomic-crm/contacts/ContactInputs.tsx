@@ -19,6 +19,8 @@ import { ArrayInput } from "@/components/admin/array-input";
 import { SimpleFormIterator } from "@/components/admin/simple-form-iterator";
 
 import { isLinkedinUrl } from "../misc/isLinkedInUrl";
+import { contactRoleChoices, languageChoices } from "../tawlity/choices";
+import { parseKuwaitPhone, validateKuwaitPhone } from "../tawlity/kuwait";
 import { StatusSelector } from "../notes";
 import type { Sale, Contact } from "../types";
 import { Avatar } from "./Avatar";
@@ -85,10 +87,16 @@ const ContactPositionInputs = () => {
       <h6 className="text-lg font-semibold">
         {translate("resources.contacts.field_categories.position")}
       </h6>
-      <TextInput source="title" helperText={false} />
       <ReferenceInput source="company_id" reference="companies" perPage={10}>
         <AutocompleteCompanyInput label="resources.contacts.fields.company_id" />
       </ReferenceInput>
+      <SelectInput
+        source="role"
+        choices={contactRoleChoices}
+        helperText={false}
+      />
+      <TextInput source="title" helperText={false} />
+      <BooleanInput source="is_decision_maker" helperText={false} />
     </div>
   );
 };
@@ -182,7 +190,9 @@ const ContactPersonalInformationInputs = () => {
             className="w-full"
             helperText={false}
             label={false}
-            placeholder={translate("resources.contacts.fields.phone_number")}
+            placeholder="+965 1234 5678"
+            validate={validateKuwaitPhone}
+            parse={parseKuwaitPhone}
           />
           <SelectInput
             source="type"
@@ -211,6 +221,13 @@ const ContactMiscInputs = () => {
       <h6 className="text-lg font-semibold">
         {translate("resources.contacts.field_categories.misc")}
       </h6>
+      <RadioButtonGroupInput
+        source="preferred_language"
+        label="resources.contacts.fields.preferred_language"
+        choices={languageChoices}
+        row
+        helperText={false}
+      />
       <TextInput source="background" multiline helperText={false} />
       <BooleanInput source="has_newsletter" helperText={false} />
       <ReferenceInput

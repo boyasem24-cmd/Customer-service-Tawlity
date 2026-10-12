@@ -25,7 +25,7 @@ describe("ContactEdit", () => {
 
       // The form should display one empty phone placeholder input
       await expect
-        .element(screen.getByPlaceholder("Phone number"))
+        .element(screen.getByPlaceholder("+965 1234 5678"))
         .toBeInTheDocument();
     });
 
@@ -120,8 +120,8 @@ describe("ContactEdit", () => {
       const emailInput = screen.getByPlaceholder("Email");
       await expect.element(emailInput).toHaveValue("ada@example.com");
 
-      const phoneInput = screen.getByPlaceholder("Phone number");
-      await expect.element(phoneInput).toHaveValue("0123456789");
+      const phoneInput = screen.getByPlaceholder("+965 1234 5678");
+      await expect.element(phoneInput).toHaveValue("+965 2233 4455");
 
       // Submit without changes
       await screen.getByRole("button", { name: /^save$/i }).click();
@@ -140,7 +140,7 @@ describe("ContactEdit", () => {
         expect.objectContaining({
           data: expect.objectContaining({
             email_jsonb: [{ email: "ada@example.com", type: "Work" }],
-            phone_jsonb: [{ number: "0123456789", type: "Work" }],
+            phone_jsonb: [{ number: "+965 2233 4455", type: "Work" }],
           }),
         }),
       );
@@ -162,7 +162,7 @@ describe("ContactEdit", () => {
 
       // The form should display one empty phone placeholder input
       await expect
-        .element(screen.getByPlaceholder("Phone number"))
+        .element(screen.getByPlaceholder("+965 1234 5678"))
         .toBeInTheDocument();
     });
 
@@ -260,8 +260,8 @@ describe("ContactEdit", () => {
       const emailInput = screen.getByPlaceholder("Email");
       await expect.element(emailInput).toHaveValue("ada@example.com");
 
-      const phoneInput = screen.getByPlaceholder("Phone number");
-      await expect.element(phoneInput).toHaveValue("0123456789");
+      const phoneInput = screen.getByPlaceholder("+965 1234 5678");
+      await expect.element(phoneInput).toHaveValue("+965 2233 4455");
 
       // Submit without changes
       await screen.getByRole("button", { name: /^save$/i }).click();
@@ -280,7 +280,7 @@ describe("ContactEdit", () => {
         expect.objectContaining({
           data: expect.objectContaining({
             email_jsonb: [{ email: "ada@example.com", type: "Work" }],
-            phone_jsonb: [{ number: "0123456789", type: "Work" }],
+            phone_jsonb: [{ number: "+965 2233 4455", type: "Work" }],
           }),
         }),
       );

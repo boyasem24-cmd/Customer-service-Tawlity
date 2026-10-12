@@ -1,5 +1,12 @@
 import { endOfYesterday, startOfMonth, startOfWeek, subMonths } from "date-fns";
-import { CheckSquare, Clock, Tag, TrendingUp, Users } from "lucide-react";
+import {
+  Briefcase,
+  CheckSquare,
+  Clock,
+  Tag,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import {
   useGetIdentity,
   useGetList,
@@ -16,6 +23,7 @@ import { ResponsiveFilters } from "../misc/ResponsiveFilters";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ActiveFilterButton } from "../misc/ActiveFilterButton";
 import { AccountManagerFilter } from "../sales/AccountManagerInput";
+import { contactRoleChoices } from "../tawlity/choices";
 
 export const ContactListFilter = () => {
   const { noteStatuses } = useConfigurationContext();
@@ -130,6 +138,27 @@ export const ContactListFilter = () => {
               size={isMobile ? "lg" : undefined}
             />
           ))}
+      </FilterCategory>
+
+      <FilterCategory
+        icon={<Briefcase />}
+        label="resources.contacts.fields.role"
+      >
+        <ToggleFilterButton
+          className="w-auto md:w-full justify-between h-10 md:h-8"
+          label="resources.contacts.filters.decision_makers"
+          value={{ is_decision_maker: true }}
+          size={isMobile ? "lg" : undefined}
+        />
+        {contactRoleChoices.map((choice) => (
+          <ToggleFilterButton
+            key={choice.id}
+            className="w-auto md:w-full justify-between h-10 md:h-8"
+            label={choice.name}
+            value={{ role: choice.id }}
+            size={isMobile ? "lg" : undefined}
+          />
+        ))}
       </FilterCategory>
 
       <FilterCategory

@@ -14,6 +14,7 @@ import type {
   ContactNote,
   Deal,
   DealNote,
+  Diner,
   Sale,
   SalesFormData,
   SearchResourceName,
@@ -659,6 +660,33 @@ export const createDataProvider = ({
         beforeSave: async (params) => preserveAttachmentMimeType(params),
       } satisfies ResourceCallbacks<ContactNote>,
       {
+        // Like the DB: phone is unique and phone_digits is derived from it
+        resource: "diners",
+        beforeCreate: async (params, dataProvider) => ({
+          ...params,
+          data: {
+            ...params.data,
+            ...(await checkDinerPhone(dataProvider, params.data.phone)),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          },
+        }),
+        beforeUpdate: async (params, dataProvider) => ({
+          ...params,
+          data: {
+            ...params.data,
+            ...(params.data.phone !== undefined
+              ? await checkDinerPhone(
+                  dataProvider,
+                  params.data.phone,
+                  params.id,
+                )
+              : {}),
+            updated_at: new Date().toISOString(),
+          },
+        }),
+      } satisfies ResourceCallbacks<Diner>,
+      {
         resource: "deal_notes",
         beforeSave: async (params) => preserveAttachmentMimeType(params),
       } satisfies ResourceCallbacks<DealNote>,
@@ -666,6 +694,24 @@ export const createDataProvider = ({
   ) as CrmDataProvider;
 
   return dataProvider;
+};
+
+/** Refuses a phone number another diner already uses, returns its digits. */
+const checkDinerPhone = async (
+  dataProvider: DataProvider,
+  phone: string | null | undefined,
+  id?: Identifier,
+) => {
+  const phone_digits = String(phone ?? "").replace(/\D/g, "");
+  const { data } = await dataProvider.getList<Diner>("diners", {
+    filter: { phone_digits },
+    pagination: { page: 1, perPage: 2 },
+    sort: { field: "id", order: "ASC" },
+  });
+  if (data.some((diner) => String(diner.id) !== String(id))) {
+    throw new Error("A diner with this phone number already exists");
+  }
+  return { phone_digits };
 };
 
 export const dataProvider = createDataProvider();

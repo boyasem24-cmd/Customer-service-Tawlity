@@ -15,13 +15,15 @@ import { TextField } from "@/components/admin/text-field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Star } from "lucide-react";
 
 import { Status } from "../misc/Status";
 import { formatRelativeDate } from "../misc/RelativeDate";
 import type { Contact } from "../types";
 import { Avatar } from "./Avatar";
 import { TagsList } from "./TagsList";
+import { useChoiceLabel } from "../tawlity/ChoiceLabel";
+import { contactRoleChoices } from "../tawlity/choices";
 
 export const ContactListContent = () => {
   const translate = useTranslate();
@@ -105,6 +107,7 @@ const ContactItemContent = ({
   handleToggleItem: (id: Identifier, event: MouseEvent) => void;
 }) => {
   const translate = useTranslate();
+  const roleLabel = useChoiceLabel(contactRoleChoices);
   const [locale = "en"] = useLocaleState();
   const { selectedIds } = useListContext<Contact>();
   const lastActivity = contact.last_seen
@@ -128,8 +131,22 @@ const ContactItemContent = ({
       >
         <Avatar />
         <div className="flex-1 min-w-0">
-          <div className="font-medium">
+          <div className="font-medium flex items-center gap-2">
             {`${contact.first_name} ${contact.last_name ?? ""}`}
+            {contact.is_decision_maker ? (
+              <span
+                className="inline-flex items-center gap-1 rounded-md border border-amber-300 bg-amber-50 px-1.5 text-xs font-normal text-amber-800"
+                title={translate("resources.contacts.fields.is_decision_maker")}
+              >
+                <Star className="w-3 h-3" />
+                {translate("resources.contacts.decision_maker_short")}
+              </span>
+            ) : null}
+            {contact.role ? (
+              <span className="text-xs font-normal text-muted-foreground">
+                {roleLabel(contact.role)}
+              </span>
+            ) : null}
           </div>
           {contact.title || contact.company_id != null || contact.nb_tasks ? (
             <div className="text-sm text-muted-foreground">

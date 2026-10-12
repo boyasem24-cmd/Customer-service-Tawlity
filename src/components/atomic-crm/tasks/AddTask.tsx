@@ -103,7 +103,7 @@ export const AddTask = ({
       <CreateBase
         resource="tasks"
         record={{
-          type: "none",
+          type: "call",
           contact_id: contact?.id,
           due_date: new Date().toISOString(),
           sales_id: identity.id,

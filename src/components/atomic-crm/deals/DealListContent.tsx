@@ -1,6 +1,12 @@
 import { DragDropContext, type OnDragEndResponder } from "@hello-pangea/dnd";
 import isEqual from "lodash/isEqual";
-import { useDataProvider, useListContext, type DataProvider } from "ra-core";
+import {
+  useDataProvider,
+  useListContext,
+  useNotify,
+  useRedirect,
+  type DataProvider,
+} from "ra-core";
 import { useEffect, useState } from "react";
 
 import { useConfigurationContext } from "../root/ConfigurationContext";
@@ -13,6 +19,8 @@ export const DealListContent = () => {
   const { dealStages } = useConfigurationContext();
   const { data: unorderedDeals, isPending, refetch } = useListContext<Deal>();
   const dataProvider = useDataProvider();
+  const notify = useNotify();
+  const redirect = useRedirect();
 
   const [dealsByStage, setDealsByStage] = useState<DealsByStage>(
     getDealsByStage([], dealStages),
@@ -67,6 +75,15 @@ export const DealListContent = () => {
     // persist the changes
     updateDealStage(sourceDeal, destinationDeal, dataProvider).then(() => {
       refetch();
+      // A deal moved to "Lost" needs a lost reason: open the edit form
+      if (
+        destinationStage === "lost" &&
+        sourceStage !== "lost" &&
+        !sourceDeal.lost_reason
+      ) {
+        notify("resources.deals.lost_reason_required", { type: "info" });
+        redirect(`/deals/${sourceDeal.id}`);
+      }
     });
   };
 

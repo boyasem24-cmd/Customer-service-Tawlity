@@ -12,6 +12,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { contactOptionText } from "../misc/ContactOption";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { AutocompleteCompanyInput } from "../companies/AutocompleteCompanyInput.tsx";
+import { lostReasonChoices, planChoices } from "../tawlity/choices";
+import { useWatch } from "react-hook-form";
 
 export const DealInputs = () => {
   const isMobile = useIsMobile();
@@ -64,8 +66,9 @@ const DealLinkedToInputs = () => {
 };
 
 const DealMiscInputs = () => {
-  const { dealStages, dealCategories } = useConfigurationContext();
+  const { dealStages } = useConfigurationContext();
   const translate = useTranslate();
+  const stage = useWatch({ name: "stage" });
   return (
     <div className="flex flex-col gap-4 flex-1">
       <h3 className="text-base font-medium">
@@ -73,17 +76,25 @@ const DealMiscInputs = () => {
       </h3>
 
       <SelectInput
-        source="category"
-        choices={dealCategories}
-        optionText="label"
-        optionValue="value"
+        source="plan"
+        choices={planChoices}
         helperText={false}
+        validate={required()}
       />
       <NumberInput
         source="amount"
         defaultValue={0}
+        step={0.001}
+        min={0}
         helperText={false}
         validate={required()}
+      />
+      <NumberInput
+        source="nb_branches_covered"
+        defaultValue={1}
+        step={1}
+        min={1}
+        helperText={false}
       />
       <DateInput
         validate={required()}
@@ -96,10 +107,18 @@ const DealMiscInputs = () => {
         choices={dealStages}
         optionText="label"
         optionValue="value"
-        defaultValue="opportunity"
+        defaultValue="lead"
         helperText={false}
         validate={required()}
       />
+      {stage === "lost" ? (
+        <SelectInput
+          source="lost_reason"
+          choices={lostReasonChoices}
+          helperText={false}
+          validate={required()}
+        />
+      ) : null}
     </div>
   );
 };

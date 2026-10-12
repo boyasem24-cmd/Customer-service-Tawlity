@@ -81,6 +81,8 @@ export const DealCreate = ({ open }: { open: boolean }) => {
               sales_id: identity?.id,
               contact_ids: [],
               index: 0,
+              plan: "starter",
+              nb_branches_covered: 1,
             }}
           >
             <DealInputs />

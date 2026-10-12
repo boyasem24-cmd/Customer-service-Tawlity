@@ -48,7 +48,7 @@ export const TaskFormContent = ({
           choices={taskTypes}
           optionText="label"
           optionValue="value"
-          defaultValue="none"
+          defaultValue="call"
           helperText={false}
         />
       </div>

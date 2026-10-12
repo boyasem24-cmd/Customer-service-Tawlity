@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CancelButton } from "@/components/admin/cancel-button";
 import { SaveButton } from "@/components/admin/form";
 
+import { DEFAULT_COUNTRY } from "../tawlity/kuwait";
 import { CompanyInputs } from "./CompanyInputs";
 
 export const CompanyCreate = () => {
@@ -21,7 +22,16 @@ export const CompanyCreate = () => {
     >
       <div className="mt-2 flex lg:mr-72">
         <div className="flex-1">
-          <Form defaultValues={{ sales_id: identity?.id }}>
+          <Form
+            defaultValues={{
+              sales_id: identity?.id,
+              account_status: "prospect",
+              country: DEFAULT_COUNTRY,
+              cuisines: [],
+              is_holding: false,
+              kga_member: false,
+            }}
+          >
             <Card>
               <CardContent>
                 <CompanyInputs />
@@ -32,7 +42,7 @@ export const CompanyCreate = () => {
                   <CancelButton />
                   <SaveButton
                     label={translate("resources.companies.action.create", {
-                      _: "Create Company",
+                      _: "Create Restaurant",
                     })}
                   />
                 </div>

@@ -25,6 +25,8 @@ const Header = () => {
     currentPath = "/companies";
   } else if (matchPath("/deals/*", location.pathname)) {
     currentPath = "/deals";
+  } else if (matchPath("/diners/*", location.pathname)) {
+    currentPath = "/diners";
   } else {
     currentPath = false;
   }
@@ -52,33 +54,46 @@ const Header = () => {
                 <h1 className="text-xl font-semibold">{title}</h1>
               </Link>
               <div>
-                <nav className="flex">
+                <nav className="flex items-end">
                   <NavigationTab
                     label={translate("ra.page.dashboard")}
                     to="/"
                     isActive={currentPath === "/"}
                   />
-                  <NavigationTab
-                    label={translate("resources.contacts.name", {
-                      smart_count: 2,
-                    })}
-                    to="/contacts"
-                    isActive={currentPath === "/contacts"}
-                  />
-                  <NavigationTab
-                    label={translate("resources.companies.name", {
-                      smart_count: 2,
-                    })}
-                    to="/companies"
-                    isActive={currentPath === "/companies"}
-                  />
-                  <NavigationTab
-                    label={translate("resources.deals.name", {
-                      smart_count: 2,
-                    })}
-                    to="/deals"
-                    isActive={currentPath === "/deals"}
-                  />
+                  <NavSection
+                    label={translate("crm.navigation.restaurants_section")}
+                  >
+                    <NavigationTab
+                      label={translate("resources.companies.name", {
+                        smart_count: 2,
+                      })}
+                      to="/companies"
+                      isActive={currentPath === "/companies"}
+                    />
+                    <NavigationTab
+                      label={translate("resources.contacts.name", {
+                        smart_count: 2,
+                      })}
+                      to="/contacts"
+                      isActive={currentPath === "/contacts"}
+                    />
+                    <NavigationTab
+                      label={translate("crm.navigation.pipeline")}
+                      to="/deals"
+                      isActive={currentPath === "/deals"}
+                    />
+                  </NavSection>
+                  <NavSection
+                    label={translate("crm.navigation.diners_section")}
+                  >
+                    <NavigationTab
+                      label={translate("resources.diners.name", {
+                        smart_count: 2,
+                      })}
+                      to="/diners"
+                      isActive={currentPath === "/diners"}
+                    />
+                  </NavSection>
                 </nav>
               </div>
               <div className="flex items-center">
@@ -105,6 +120,22 @@ const Header = () => {
   );
 };
 
+/** A labelled group of tabs, keeping the Restaurants and Diners sides apart. */
+const NavSection = ({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) => (
+  <div className="flex flex-col items-stretch border-l border-secondary-foreground/15 ml-2 pl-2">
+    <span className="px-6 pt-1 text-[10px] font-semibold uppercase tracking-wider text-secondary-foreground/50 leading-none">
+      {label}
+    </span>
+    <div className="flex">{children}</div>
+  </div>
+);
+
 const NavigationTab = ({
   label,
   to,
@@ -116,7 +147,7 @@ const NavigationTab = ({
 }) => (
   <Link
     to={to}
-    className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+    className={`px-5 pt-1.5 pb-2.5 text-sm font-medium transition-colors border-b-2 ${
       isActive
         ? "text-secondary-foreground border-secondary-foreground"
         : "text-secondary-foreground/70 border-transparent hover:text-secondary-foreground/80"

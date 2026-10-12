@@ -1,0 +1,4 @@
+first_name,last_name,phone,email,preferred_language,gender,signup_date,signup_platform,acquisition_source,total_reservations,total_no_shows,total_cancellations,last_booking_date,whatsapp_consent,whatsapp_consent_date,status
+Noura,Al-Mutairi,+965 5555 1234,noura@example.com,ar,female,2026-03-14,ios,meta_ad,12,1,2,2026-10-01,true,2026-03-14,active
+Fahad,Al-Azmi,99887766,,ar,male,2026-05-02,android,referral,3,2,0,2026-08-19,false,,inactive
+Sara,Haddad,+96566001122,sara.h@example.com,en,female,2026-07-21,web,organic,1,0,0,2026-07-30,true,2026-07-21,active

@@ -1,10 +1,10 @@
-import type { CrmMessages } from "./englishCrmMessages";
+import type { PartialCrmMessages } from "./englishCrmMessages";
 
 export const frenchCrmMessages = {
   resources: {
     companies: {
-      name: "Entreprise |||| Entreprises",
-      forcedCaseName: "Entreprise",
+      name: "Restaurant |||| Restaurants",
+      forcedCaseName: "Restaurant",
       fields: {
         name: "Nom de l'entreprise",
         website: "Site web",
@@ -604,4 +604,4 @@ export const frenchCrmMessages = {
       invalid_linkedin_url: "L'URL doit provenir de linkedin.com",
     },
   },
-} satisfies CrmMessages;
+} satisfies PartialCrmMessages;

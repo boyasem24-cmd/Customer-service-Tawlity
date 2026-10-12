@@ -11,7 +11,7 @@ const DateFieldImpl = <
 ) => {
   const {
     empty,
-    locales,
+    locales = "en-GB", // Kuwait convention: DD/MM/YYYY
     options,
     showTime = false,
     showDate = true,

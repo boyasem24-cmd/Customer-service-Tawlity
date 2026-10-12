@@ -397,7 +397,32 @@ const lifeCycleCallbacks: ResourceCallbacks[] = [
       return applyFullTextSearch(["name", "category", "description"])(params);
     },
   },
+  {
+    resource: "diners",
+    beforeGetList: async (params) => applyDinerSearch(params),
+  },
 ];
+
+/** Diners are searched by name, email or phone (digits only, any format). */
+const applyDinerSearch = (params: GetListParams) => {
+  if (!params.filter?.q) {
+    return params;
+  }
+  const { q, ...filter } = params.filter;
+  const digits = String(q).replace(/\D/g, "");
+  return {
+    ...params,
+    filter: {
+      ...filter,
+      "@or": {
+        "first_name@ilike": q,
+        "last_name@ilike": q,
+        "email@ilike": q,
+        ...(digits.length >= 3 ? { "phone_digits@ilike": digits } : {}),
+      },
+    },
+  };
+};
 
 export const getDataProvider = () => {
   if (import.meta.env.VITE_SUPABASE_URL === undefined) {

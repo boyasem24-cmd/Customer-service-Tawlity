@@ -35,12 +35,21 @@ import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Company, Contact, Deal } from "../types";
 import {
   AdditionalInfo,
-  AddressInfo,
   CompanyAside,
   CompanyInfo,
   ContextInfo,
 } from "./CompanyAside";
 import { CompanyAvatar } from "./CompanyAvatar";
+import {
+  HoldingInfo,
+  RestaurantInfo,
+  RestaurantLocationInfo,
+} from "./RestaurantInfo";
+import { AccountStatusBadge } from "../tawlity/ChoiceLabel";
+import { BrandsTab } from "./BrandsTab";
+import { AccountPanel } from "./AccountPanel";
+import { HealthDot } from "../tawlity/HealthDot";
+import { formatMoney } from "../tawlity/kuwait";
 
 export const CompanyShow = () => {
   const isMobile = useIsMobile();
@@ -79,8 +88,13 @@ const CompanyShowContentMobile = () => {
             </div>
           </div>
         </div>
+        <div className="mb-4">
+          <AccountStatusBadge status={record.account_status} />
+        </div>
+        <RestaurantInfo record={record} />
+        <HoldingInfo record={record} />
         <CompanyInfo record={record} />
-        <AddressInfo record={record} />
+        <RestaurantLocationInfo record={record} />
         <ContextInfo record={record} />
         <AdditionalInfo record={record} />
       </MobileContent>
@@ -115,12 +129,27 @@ const CompanyShowContent = () => {
           <CardContent>
             <div className="flex mb-3">
               <CompanyAvatar />
-              <h5 className="text-xl ml-2 flex-1">{record.name}</h5>
+              <h5 className="text-xl ml-2 flex-1 flex items-center gap-2">
+                {record.name}
+                <AccountStatusBadge status={record.account_status} />
+                {record.account_status === "live" ? (
+                  <HealthDot
+                    health={record.health}
+                    note={record.health_note}
+                    showLabel
+                  />
+                ) : null}
+              </h5>
             </div>
-            <Tabs defaultValue={currentTab} onValueChange={handleTabChange}>
-              <TabsList className="grid w-full grid-cols-3">
+            <Tabs value={currentTab} onValueChange={handleTabChange}>
+              <TabsList
+                className={`grid w-full ${record.is_holding ? "grid-cols-5" : "grid-cols-4"}`}
+              >
                 <TabsTrigger value="activity">
                   {translate("crm.common.activity")}
+                </TabsTrigger>
+                <TabsTrigger value="account">
+                  {translate("resources.companies.field_categories.account")}
                 </TabsTrigger>
                 <TabsTrigger value="contacts">
                   {record.nb_contacts === 0
@@ -129,6 +158,11 @@ const CompanyShowContent = () => {
                         smart_count: record.nb_contacts ?? 0,
                       })}
                 </TabsTrigger>
+                {record.is_holding ? (
+                  <TabsTrigger value="brands">
+                    {translate("resources.companies.brands")}
+                  </TabsTrigger>
+                ) : null}
                 {record.nb_deals ? (
                   <TabsTrigger value="deals">
                     {translate("resources.companies.nb_deals", {
@@ -139,6 +173,9 @@ const CompanyShowContent = () => {
               </TabsList>
               <TabsContent value="activity" className="pt-2">
                 <ActivityLog companyId={record.id} context="company" />
+              </TabsContent>
+              <TabsContent value="account">
+                <AccountPanel />
               </TabsContent>
               <TabsContent value="contacts">
                 {record.nb_contacts ? (
@@ -167,6 +204,11 @@ const CompanyShowContent = () => {
                   </div>
                 )}
               </TabsContent>
+              {record.is_holding ? (
+                <TabsContent value="brands">
+                  <BrandsTab />
+                </TabsContent>
+              ) : null}
               <TabsContent value="deals">
                 {record.nb_deals ? (
                   <ReferenceManyField
@@ -277,13 +319,7 @@ const DealsIterator = () => {
                 <div className="font-medium">{deal.name}</div>
                 <div className="text-sm text-muted-foreground">
                   {findDealLabel(dealStages, deal.stage)},{" "}
-                  {deal.amount.toLocaleString("en-US", {
-                    notation: "compact",
-                    style: "currency",
-                    currency,
-                    currencyDisplay: "narrowSymbol",
-                    minimumSignificantDigits: 3,
-                  })}
+                  {formatMoney(deal.amount, currency)}
                   {deal.category
                     ? `, ${dealCategories.find((c) => c.value === deal.category)?.label ?? deal.category}`
                     : ""}

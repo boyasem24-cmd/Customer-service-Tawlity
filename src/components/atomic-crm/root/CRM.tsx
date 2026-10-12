@@ -20,6 +20,9 @@ import contacts from "../contacts";
 import { Dashboard } from "../dashboard/Dashboard";
 import { MobileDashboard } from "../dashboard/MobileDashboard";
 import deals from "../deals";
+import diners from "../diners";
+import { DinerList } from "../diners/DinerList";
+import { DinerShow } from "../diners/DinerShow";
 import { Layout } from "../layout/Layout";
 import { MobileLayout } from "../layout/MobileLayout";
 import { SignupPage } from "../login/SignupPage";
@@ -270,6 +273,9 @@ const DesktopAdmin = (
       <Resource name="tasks" />
       <Resource name="sales" {...sales} />
       <Resource name="tags" />
+      <Resource name="diners" {...diners} />
+      <Resource name="diner_notes" />
+      <Resource name="diner_tags" />
     </Admin>
   );
 };
@@ -347,6 +353,14 @@ const MobileAdmin = (
         </Resource>
         <Resource name="companies" show={CompanyShow} />
         <Resource name="tasks" list={MobileTasksList} />
+        <Resource
+          name="diners"
+          list={DinerList}
+          show={DinerShow}
+          recordRepresentation={diners.recordRepresentation}
+        />
+        <Resource name="diner_notes" />
+        <Resource name="diner_tags" />
       </Admin>
     </PersistQueryClientProvider>
   );

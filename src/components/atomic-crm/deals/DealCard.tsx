@@ -1,13 +1,14 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { useRedirect, RecordContextProvider } from "ra-core";
 import { ReferenceField } from "@/components/admin/reference-field";
-import { NumberField } from "@/components/admin/number-field";
-import { SelectField } from "@/components/admin/select-field";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { CompanyAvatar } from "../companies/CompanyAvatar";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Deal } from "../types";
+import { useChoiceLabel } from "../tawlity/ChoiceLabel";
+import { lostReasonChoices, planChoices } from "../tawlity/choices";
+import { formatMoney } from "../tawlity/kuwait";
 
 export const DealCard = ({ deal, index }: { deal: Deal; index: number }) => {
   if (!deal) return null;
@@ -30,7 +31,9 @@ export const DealCardContent = ({
   snapshot?: any;
   deal: Deal;
 }) => {
-  const { dealCategories, currency } = useConfigurationContext();
+  const { currency } = useConfigurationContext();
+  const planLabel = useChoiceLabel(planChoices);
+  const lostReasonLabel = useChoiceLabel(lostReasonChoices);
   const redirect = useRedirect();
   const handleClick = () => {
     redirect(`/deals/${deal.id}/show`, undefined, undefined, undefined, {
@@ -74,23 +77,11 @@ export const DealCardContent = ({
               </ReferenceField>
             </div>
             <p className="text-xs text-muted-foreground">
-              <NumberField
-                source="amount"
-                options={{
-                  notation: "compact",
-                  style: "currency",
-                  currency,
-                  currencyDisplay: "narrowSymbol",
-                  minimumSignificantDigits: 3,
-                }}
-              />
-              {deal.category && ", "}
-              <SelectField
-                source="category"
-                choices={dealCategories}
-                optionText="label"
-                optionValue="value"
-              />
+              {formatMoney(deal.amount, currency)}
+              {deal.plan ? ` · ${planLabel(deal.plan)}` : null}
+              {deal.stage === "lost" && deal.lost_reason
+                ? ` · ${lostReasonLabel(deal.lost_reason)}`
+                : null}
             </p>
           </CardContent>
         </Card>

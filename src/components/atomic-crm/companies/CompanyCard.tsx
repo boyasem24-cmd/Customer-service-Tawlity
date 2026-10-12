@@ -10,7 +10,9 @@ import { ReferenceManyField } from "@/components/admin/reference-many-field";
 import { Card } from "@/components/ui/card";
 
 import { Avatar as ContactAvatar } from "../contacts/Avatar";
-import { useConfigurationContext } from "../root/ConfigurationContext";
+import { AccountStatusBadge, ChoiceLabels } from "../tawlity/ChoiceLabel";
+import { cuisineChoices, governorateChoices } from "../tawlity/choices";
+import { HealthDot } from "../tawlity/HealthDot";
 import type { Company } from "../types";
 import { CompanyAvatar } from "./CompanyAvatar";
 
@@ -18,11 +20,7 @@ export const CompanyCard = (props: { record?: Company }) => {
   const createPath = useCreatePath();
   const record = useRecordContext<Company>(props);
   const translate = useTranslate();
-  const { companySectors } = useConfigurationContext();
   if (!record) return null;
-
-  const sector = companySectors.find((s) => s.value === record.sector);
-  const sectorLabel = sector?.label;
 
   return (
     <Link
@@ -33,12 +31,32 @@ export const CompanyCard = (props: { record?: Company }) => {
       })}
       className="no-underline"
     >
-      <Card className="h-[200px] flex flex-col justify-between p-4 hover:bg-muted">
+      <Card className="h-[220px] flex flex-col justify-between p-4 hover:bg-muted">
         <div className="flex flex-col items-center gap-1">
           <CompanyAvatar />
-          <div className="text-center mt-1">
+          <div className="text-center mt-1 flex flex-col items-center gap-1">
             <h6 className="text-sm font-medium">{record.name}</h6>
-            <p className="text-xs text-muted-foreground">{sectorLabel}</p>
+            <p className="text-xs text-muted-foreground line-clamp-1">
+              {record.is_holding ? (
+                translate("resources.companies.holding_company")
+              ) : (
+                <ChoiceLabels
+                  choices={cuisineChoices}
+                  values={record.cuisines}
+                />
+              )}
+              {record.governorate ? " · " : null}
+              <ChoiceLabels
+                choices={governorateChoices}
+                values={record.governorate}
+              />
+            </p>
+            <div className="flex items-center gap-1">
+              <AccountStatusBadge status={record.account_status} />
+              {record.account_status === "live" ? (
+                <HealthDot health={record.health} note={record.health_note} />
+              ) : null}
+            </div>
           </div>
         </div>
         <div className="flex flex-row w-full justify-between gap-2">

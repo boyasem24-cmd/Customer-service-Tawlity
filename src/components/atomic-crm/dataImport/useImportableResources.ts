@@ -8,9 +8,16 @@ import contactsSampleCsv from "../contacts/contacts_export.csv?raw";
 import type { ImportableResource } from "./types";
 import { useCompanyImport } from "./useCompanyImport";
 import { useDealImport } from "./useDealImport";
+import { useDinerImport } from "../diners/useDinerImport";
+import dinersSampleCsv from "../diners/diners_sample.csv?raw";
 
 /** Every resource a CSV can be imported into, in the order the dialog offers them. */
-export const IMPORTABLE_RESOURCES = ["contacts", "companies", "deals"] as const;
+export const IMPORTABLE_RESOURCES = [
+  "contacts",
+  "companies",
+  "deals",
+  "diners",
+] as const;
 
 export type ImportableResourceName = (typeof IMPORTABLE_RESOURCES)[number];
 
@@ -23,6 +30,7 @@ export function useImportableResources(): ImportableResource[] {
   const processContacts = useContactImport();
   const processCompanies = useCompanyImport();
   const processDeals = useDealImport();
+  const processDiners = useDinerImport();
   const definitions = useResourceDefinitions();
 
   const resources: ImportableResource[] = [
@@ -43,6 +51,13 @@ export function useImportableResources(): ImportableResource[] {
       processBatch: processCompanies,
     },
     { name: "deals", sampleCsv: dealsSampleCsv, processBatch: processDeals },
+    {
+      name: "diners",
+      sampleCsv: dinersSampleCsv,
+      // Phones must stay text: "99887766" would otherwise become a number
+      textColumns: ["phone"],
+      processBatch: processDiners,
+    },
   ];
 
   return resources.filter(({ name }) => name in definitions);

@@ -27,6 +27,9 @@ import { NotesIterator } from "../notes/NotesIterator";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import type { Deal } from "../types";
 import { ContactList } from "./ContactList";
+import { formatMoney } from "../tawlity/kuwait";
+import { useChoiceLabel } from "../tawlity/ChoiceLabel";
+import { lostReasonChoices, planChoices } from "../tawlity/choices";
 import { findDealLabel, formatISODateString } from "./dealUtils";
 
 export const DealShow = ({ open, id }: { open: boolean; id?: string }) => {
@@ -50,8 +53,10 @@ export const DealShow = ({ open, id }: { open: boolean; id?: string }) => {
 
 const DealShowContent = () => {
   const translate = useTranslate();
-  const { dealStages, dealCategories, currency } = useConfigurationContext();
+  const { dealStages, currency } = useConfigurationContext();
   const record = useRecordContext<Deal>();
+  const planLabel = useChoiceLabel(planChoices);
+  const lostReasonLabel = useChoiceLabel(lostReasonChoices);
   if (!record) return null;
 
   return (
@@ -109,27 +114,27 @@ const DealShowContent = () => {
                 {translate("resources.deals.fields.amount")}
               </span>
               <span className="text-sm">
-                {record.amount.toLocaleString("en-US", {
-                  notation: "compact",
-                  style: "currency",
-                  currency,
-                  currencyDisplay: "narrowSymbol",
-                  minimumSignificantDigits: 3,
-                })}
+                {formatMoney(record.amount, currency)}
               </span>
             </div>
 
-            {record.category && (
+            {record.plan && (
               <div className="flex flex-col mr-10">
                 <span className="text-xs text-muted-foreground tracking-wide">
-                  {translate("resources.deals.fields.category")}
+                  {translate("resources.deals.fields.plan")}
                 </span>
-                <span className="text-sm">
-                  {dealCategories.find((c) => c.value === record.category)
-                    ?.label ?? record.category}
-                </span>
+                <span className="text-sm">{planLabel(record.plan)}</span>
               </div>
             )}
+
+            {record.nb_branches_covered ? (
+              <div className="flex flex-col mr-10">
+                <span className="text-xs text-muted-foreground tracking-wide">
+                  {translate("resources.deals.fields.nb_branches_covered")}
+                </span>
+                <span className="text-sm">{record.nb_branches_covered}</span>
+              </div>
+            ) : null}
 
             <div className="flex flex-col mr-10">
               <span className="text-xs text-muted-foreground tracking-wide">
@@ -139,6 +144,17 @@ const DealShowContent = () => {
                 {findDealLabel(dealStages, record.stage)}
               </span>
             </div>
+
+            {record.stage === "lost" && record.lost_reason ? (
+              <div className="flex flex-col mr-10">
+                <span className="text-xs text-muted-foreground tracking-wide">
+                  {translate("resources.deals.fields.lost_reason")}
+                </span>
+                <span className="text-sm">
+                  {lostReasonLabel(record.lost_reason)}
+                </span>
+              </div>
+            ) : null}
           </div>
 
           {!!record.contact_ids?.length && (
