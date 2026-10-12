@@ -1,5 +1,7 @@
 import { subDays } from "date-fns";
-import { datatype, lorem, random } from "faker/locale/en_US";
+import { datatype, random } from "faker/locale/en_US";
+
+import { dinerNoteTexts, dinerSupportTexts } from "./realisticContent";
 
 import type { Diner, DinerNote, DinerTag } from "../../../types";
 import type { Db } from "./types";
@@ -115,19 +117,6 @@ export const generateDiners = (db: Db, size = 80): Diner[] => {
   });
 };
 
-const supportTexts = [
-  "Reservation not showing in the app after booking.",
-  "Asked to remove a no-show strike after a family emergency.",
-  "Could not join the waitlist, app kept loading.",
-  "Wants to change the phone number on the account.",
-];
-
-const noteTexts = [
-  "Prefers outdoor seating, usually books for 4.",
-  "Celebrates anniversary in March — send an offer.",
-  "Called to thank the team for the quick waitlist.",
-];
-
 export const generateDinerNotes = (db: Db): DinerNote[] =>
   Array.from(Array(60).keys()).map((id) => {
     const diner = random.arrayElement(db.diners);
@@ -135,9 +124,7 @@ export const generateDinerNotes = (db: Db): DinerNote[] =>
     return {
       id,
       diner_id: diner.id,
-      text:
-        random.arrayElement(isSupport ? supportTexts : noteTexts) ||
-        lorem.sentence(),
+      text: random.arrayElement(isSupport ? dinerSupportTexts : dinerNoteTexts),
       date: randomDate(subDays(new Date(), 90)).toISOString(),
       sales_id: random.arrayElement(db.sales).id,
       kind: isSupport ? "support" : "note",

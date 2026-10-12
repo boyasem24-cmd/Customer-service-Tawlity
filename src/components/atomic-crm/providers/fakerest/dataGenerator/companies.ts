@@ -1,4 +1,6 @@
-import { datatype, lorem, random } from "faker/locale/en_US";
+import { datatype, random } from "faker/locale/en_US";
+
+import { restaurantDescriptions } from "./realisticContent";
 
 import { randomDate, weightedArrayElement, weightedBoolean } from "./utils";
 import {
@@ -51,7 +53,7 @@ export const generateCompanies = (db: Db): Required<Company>[] => {
       // at least 1/3rd of restaurants for Jane Doe
       sales_id: datatype.number(2) === 0 ? 0 : random.arrayElement(db.sales).id,
       created_at: randomDate().toISOString(),
-      description: lorem.sentence(),
+      description: random.arrayElement(restaurantDescriptions),
       revenue: "",
       tax_identifier: "",
       country: "Kuwait",
@@ -155,8 +157,10 @@ const applyAccountData = (restaurant: Required<Company>) => {
   if (renewal < new Date()) renewal.setFullYear(renewal.getFullYear() + 1);
   restaurant.plan = plan;
   restaurant.monthly_fee =
-    planFees[plan] * Math.max(1, restaurant.nb_branches ?? 1) +
-    datatype.number({ min: 0, max: 4 }) * 0.25;
+    plan === "free_trial"
+      ? 0
+      : planFees[plan] * Math.max(1, restaurant.nb_branches ?? 1) +
+        datatype.number({ min: 0, max: 4 }) * 0.25;
   restaurant.contract_start_date = toDateOnly(start);
   restaurant.renewal_date = toDateOnly(renewal);
   const done =

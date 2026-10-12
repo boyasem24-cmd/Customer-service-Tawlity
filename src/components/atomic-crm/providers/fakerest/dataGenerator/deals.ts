@@ -1,5 +1,7 @@
 import { add } from "date-fns";
-import { datatype, lorem, random } from "faker/locale/en_US";
+import { datatype, random } from "faker/locale/en_US";
+
+import { dealDescriptions } from "./realisticContent";
 
 import { defaultDealStages } from "../../../root/defaultConfiguration";
 import { lostReasonChoices } from "../../../tawlity/choices";
@@ -77,7 +79,7 @@ export const generateDeals = (db: Db): Deal[] => {
       contact_ids: contacts.map((contact) => contact.id),
       category: "other",
       stage,
-      description: lorem.sentence(),
+      description: dealDescriptions[stage] ?? "",
       amount,
       created_at,
       updated_at: randomDate(new Date(created_at)).toISOString(),

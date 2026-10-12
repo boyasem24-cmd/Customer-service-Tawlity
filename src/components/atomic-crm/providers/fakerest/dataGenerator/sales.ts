@@ -1,13 +1,19 @@
-import { internet, name } from "faker/locale/en_US";
-
 import type { RAFile, Sale } from "../../../types";
 import type { Db } from "./types";
 
 export const generateSales = (_: Db): Sale[] => {
-  const randomSales = Array.from(Array(5).keys()).map((id) => {
-    const first_name = name.firstName();
-    const last_name = name.lastName();
-    const email = internet.email(first_name, last_name);
+  const team = [
+    ["Hessa", "Al-Sabah"],
+    ["Yousef", "Behbehani"],
+    ["Dana", "Al-Mutairi"],
+    ["Rami", "Haddad"],
+    ["Noura", "Al-Kandari"],
+  ];
+  const randomSales = team.map(([first_name, last_name], id) => {
+    const email = `${first_name}.${last_name}`
+      .toLowerCase()
+      .replace(/[^a-z.]/g, "")
+      .concat("@tawlity.co");
 
     return {
       id: id + 1,

@@ -1,4 +1,6 @@
-import { lorem, random } from "faker/locale/en_US";
+import { random } from "faker/locale/en_US";
+
+import { contactBackgrounds, fill } from "./realisticContent";
 
 import { defaultNoteStatuses } from "../../../root/defaultConfiguration";
 import { contactGender } from "../../../contacts/contactModel";
@@ -100,7 +102,9 @@ export const generateContacts = (db: Db, size = 120): Required<Contact>[] => {
       company_name: company.name,
       email_jsonb,
       phone_jsonb,
-      background: lorem.sentence(),
+      background: fill(random.arrayElement(contactBackgrounds), {
+        area: company.area,
+      }),
       acquisition: random.arrayElement(["inbound", "outbound"]),
       avatar,
       first_seen: first_seen,
