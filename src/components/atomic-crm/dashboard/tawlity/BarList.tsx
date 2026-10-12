@@ -36,16 +36,16 @@ export const BarList = ({
             <span className="text-sm truncate">{item.label}</span>
             <div className="h-3 rounded-sm bg-muted/60 group-hover:bg-background">
               <div
-                className="h-3 rounded-r-[4px] bg-primary opacity-80 group-hover:opacity-100 transition-opacity"
+                className="h-3 rounded-e-[4px] bg-primary opacity-80 group-hover:opacity-100 transition-opacity"
                 style={{
                   width: `${(item.value / max) * 100}%`,
                   minWidth: item.value ? 4 : 0,
                 }}
               />
             </div>
-            <span className="text-sm tabular-nums text-right min-w-12">
+            <span className="text-sm tabular-nums text-end min-w-12">
               {formatValue(item.value)}
-              <span className="ml-1 text-xs text-muted-foreground hidden group-hover:inline">
+              <span className="ms-1 text-xs text-muted-foreground hidden group-hover:inline">
                 {share}%
               </span>
             </span>

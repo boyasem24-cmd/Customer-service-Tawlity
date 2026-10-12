@@ -15,7 +15,7 @@ export const Status = ({
 
   if (!statusObject) return null;
   return (
-    <div className={cn("group relative inline-block mr-2", className)}>
+    <div className={cn("group relative inline-block me-2", className)}>
       <span
         className="inline-block w-2.5 h-2.5 rounded-full"
         style={{ backgroundColor: statusObject.color }}

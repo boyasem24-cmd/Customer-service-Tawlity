@@ -467,3 +467,49 @@ BEGIN
   RETURN NEW;
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION "public"."set_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO ''
+    AS $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+CREATE OR REPLACE FUNCTION "public"."handle_diner_tag_deleted"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO ''
+    AS $$
+begin
+  update public.diners set tags = array_remove(tags, old.id) where tags @> array[old.id];
+  return old;
+end;
+$$;
+
+CREATE OR REPLACE FUNCTION "public"."is_team_member"() RETURNS boolean
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  return exists (
+    select 1 from public.sales
+    where user_id = auth.uid() and disabled = false
+  );
+end;
+$$;
+
+CREATE OR REPLACE FUNCTION "public"."can_access_diners"() RETURNS boolean
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO ''
+    AS $$
+begin
+  return exists (
+    select 1 from public.sales
+    where user_id = auth.uid()
+      and disabled = false
+      and (administrator = true or support = true)
+  );
+end;
+$$;

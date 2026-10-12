@@ -225,7 +225,7 @@ const ContactMergeDialog = ({ open, onClose }: ContactMergeDialogProps) => {
                     _: "What will be merged:",
                   })}
                 </p>
-                <ul className="text-sm text-muted-foreground space-y-1 ml-4">
+                <ul className="text-sm text-muted-foreground space-y-1 ms-4">
                   {notesCount != null && notesCount > 0 && (
                     <li>
                       • {notesCount} note

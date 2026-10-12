@@ -73,7 +73,7 @@ function EditHeader() {
           </ReferenceField>
           <h2 className="text-2xl font-semibold">{defaultTitle}</h2>
         </div>
-        <div className="flex gap-2 pr-12">
+        <div className="flex gap-2 pe-12">
           <DeleteButton />
           <Button asChild variant="outline" className="h-9">
             <Link to={`/deals/${deal.id}/show`}>

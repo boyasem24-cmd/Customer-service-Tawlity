@@ -150,6 +150,7 @@ const getDataProviderWithCustomMethods = () => {
         first_name,
         last_name,
         administrator,
+        support,
         avatar,
         disabled,
       } = data;
@@ -166,6 +167,7 @@ const getDataProviderWithCustomMethods = () => {
             first_name,
             last_name,
             administrator,
+            support,
             disabled,
             avatar,
           },

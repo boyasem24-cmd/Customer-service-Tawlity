@@ -102,6 +102,7 @@ const CompanyContactInputs = () => {
       </h6>
       <TextInput
         source="phone_number"
+        dir="ltr"
         helperText={false}
         placeholder="+965 1234 5678"
         validate={validateKuwaitPhone}

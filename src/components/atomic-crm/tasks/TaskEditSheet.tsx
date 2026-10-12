@@ -26,7 +26,7 @@ export const TaskEditSheet = ({
           source="contact_id"
           reference="contacts"
           render={({ referenceRecord }) => (
-            <span className="text-xl font-semibold truncate pr-10">
+            <span className="text-xl font-semibold truncate pe-10">
               {referenceRecord
                 ? translate("resources.tasks.sheet.edit_for", {
                     name: getContactRepresentation(referenceRecord),

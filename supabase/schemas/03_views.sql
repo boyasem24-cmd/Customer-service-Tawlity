@@ -93,11 +93,36 @@ select
     c.tax_identifier,
     c.logo,
     count(distinct d.id) as nb_deals,
-    count(distinct co.id) as nb_contacts
+    count(distinct co.id) as nb_contacts,
+    c.is_holding,
+    c.parent_company_id,
+    p.name as parent_company_name,
+    (select count(*) from public.companies b where b.parent_company_id = c.id) as nb_brands,
+    c.cuisines,
+    c.governorate,
+    c.area,
+    c.nb_branches,
+    c.seating_capacity,
+    c.price_range,
+    c.booking_system,
+    c.kga_member,
+    c.instagram_handle,
+    c.google_maps_url,
+    c.lead_source,
+    c.account_status,
+    c.contract_start_date,
+    c.renewal_date,
+    c.plan,
+    c.monthly_fee,
+    c.onboarding_checklist,
+    c.last_report_sent_at,
+    c.health,
+    c.health_note
 from public.companies c
     left join public.deals d on c.id = d.company_id
     left join public.contacts co on c.id = co.company_id
-group by c.id;
+    left join public.companies p on p.id = c.parent_company_id
+group by c.id, p.name;
 
 create or replace view public.contacts_summary with (security_invoker = on) as
 select
@@ -121,7 +146,10 @@ select
     (jsonb_path_query_array(co.email_jsonb, '$[*]."email"'))::text as email_fts,
     (jsonb_path_query_array(co.phone_jsonb, '$[*]."number"'))::text as phone_fts,
     c.name as company_name,
-    count(distinct t.id) filter (where t.done_date is null) as nb_tasks
+    count(distinct t.id) filter (where t.done_date is null) as nb_tasks,
+    co.role,
+    co.preferred_language,
+    co.is_decision_maker
 from public.contacts co
     left join public.tasks t on co.id = t.contact_id
     left join public.companies c on co.company_id = c.id

@@ -22,7 +22,7 @@ export const ContactCreate = ({
       transform={cleanupContactForCreate}
       mutationMode={mutationMode}
     >
-      <div className="mt-2 flex lg:mr-72">
+      <div className="mt-2 flex lg:me-72">
         <div className="flex-1">
           <Form
             defaultValues={{

@@ -68,7 +68,7 @@ export const CompanyCard = (props: { record?: Company }) => {
             ) : null}
           </div>
           {record.nb_deals ? (
-            <div className="flex items-center ml-2 gap-0.5">
+            <div className="flex items-center ms-2 gap-0.5">
               <Handshake className="w-4 h-4 text-muted-foreground" />
               <span className="text-sm font-medium">{record.nb_deals}</span>
               <span className="text-xs text-muted-foreground">

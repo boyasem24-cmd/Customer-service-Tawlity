@@ -6,6 +6,8 @@ import { raSupabaseEnglishMessages } from "ra-supabase-language-english";
 import { raSupabaseFrenchMessages } from "ra-supabase-language-french";
 import { englishCrmMessages } from "./englishCrmMessages";
 import { frenchCrmMessages } from "./frenchCrmMessages";
+import { arabicCrmMessages } from "./arabicCrmMessages";
+import { arabicRaMessages } from "./arabicRaMessages";
 
 const raSupabaseEnglishMessagesOverride = {
   "ra-supabase": {
@@ -57,6 +59,17 @@ const frenchCatalog = mergeTranslations(
   frenchCrmMessages,
 );
 
+// Arabic is layered on English, so any string not translated yet stays readable
+const arabicCatalog = mergeTranslations(
+  englishCatalog,
+  arabicRaMessages,
+  arabicCrmMessages,
+);
+
+/** Locales written right-to-left */
+export const RTL_LOCALES = ["ar"];
+
+// English stays the default interface language (Arabic is picked in the menu)
 export const getInitialLocale = (): "en" | "fr" => {
   if (typeof navigator === "undefined") {
     return "en";
@@ -75,11 +88,15 @@ export const i18nProvider = polyglotI18nProvider(
     if (locale === "fr") {
       return frenchCatalog;
     }
+    if (locale === "ar") {
+      return arabicCatalog;
+    }
     return englishCatalog;
   },
   getInitialLocale(),
   [
     { locale: "en", name: "English" },
+    { locale: "ar", name: "العربية" },
     { locale: "fr", name: "Français" },
   ],
   { allowMissing: true },

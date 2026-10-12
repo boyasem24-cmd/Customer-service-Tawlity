@@ -36,7 +36,7 @@ export const ContactInputs = () => {
 
   return (
     <div className="flex flex-col gap-2 p-1 relative md:static">
-      <div className="absolute top-0 right-1 md:static">
+      <div className="absolute top-0 end-1 md:static">
         <Avatar />
       </div>
       <div className="flex gap-10 md:gap-6 flex-col md:flex-row">
@@ -190,6 +190,7 @@ const ContactPersonalInformationInputs = () => {
             className="w-full"
             helperText={false}
             label={false}
+            dir="ltr"
             placeholder="+965 1234 5678"
             validate={validateKuwaitPhone}
             parse={parseKuwaitPhone}

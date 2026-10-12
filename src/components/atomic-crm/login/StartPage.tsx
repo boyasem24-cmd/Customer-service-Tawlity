@@ -5,9 +5,11 @@ import { Navigate } from "react-router";
 import type { CrmDataProvider } from "../providers/types";
 import { LoginSkeleton } from "./LoginSkeleton";
 import { LoginPage } from "./LoginPage";
+import { useDocumentDirection } from "../layout/useDocumentDirection";
 import { disableEmailPasswordAuthentication } from "./authConfig";
 
 export const StartPage = () => {
+  useDocumentDirection();
   const dataProvider = useDataProvider<CrmDataProvider>();
   const {
     data: isInitialized,

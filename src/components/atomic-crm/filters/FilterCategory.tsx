@@ -15,7 +15,7 @@ export const FilterCategory = ({
       {icon}
       <Translate i18nKey={label} />
     </h3>
-    <div className="flex md:flex-col flex-wrap items-start pl-4">
+    <div className="flex md:flex-col flex-wrap items-start ps-4">
       {children}
     </div>
   </div>

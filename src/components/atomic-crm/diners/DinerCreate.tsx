@@ -10,7 +10,7 @@ export const DinerCreate = () => {
   const translate = useTranslate();
   return (
     <CreateBase redirect="show" transform={cleanupDinerForSave}>
-      <div className="mt-2 flex lg:mr-72">
+      <div className="mt-2 flex lg:me-72">
         <div className="flex-1">
           <Form
             defaultValues={{

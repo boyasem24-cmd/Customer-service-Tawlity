@@ -103,6 +103,7 @@ const DinerIdentityInputs = () => {
       </div>
       <TextInput
         source="phone"
+        dir="ltr"
         placeholder="+965 1234 5678"
         validate={[required(), validateKuwaitPhone, uniquePhone]}
         parse={parseKuwaitPhone}

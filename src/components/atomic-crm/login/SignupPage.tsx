@@ -110,7 +110,7 @@ export const SignupPage = () => {
         <div className="max-w-sm mx-auto h-full flex flex-col justify-center gap-4">
           <h1 className="text-2xl font-bold mb-4">
             {translate("crm.auth.welcome_title", {
-              _: "Welcome to Atomic CRM",
+              _: "Welcome to Tawlity CRM",
             })}
           </h1>
           <p className="text-base mb-4">
@@ -167,7 +167,7 @@ export const SignupPage = () => {
               >
                 {isSignUpPending ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    <Loader2 className="w-4 h-4 animate-spin me-2" />
                     {translate("crm.auth.signup.creating", {
                       _: "Creating...",
                     })}

@@ -75,7 +75,7 @@ const DealShowContent = () => {
               </ReferenceField>
               <h2 className="text-2xl font-semibold">{record.name}</h2>
             </div>
-            <div className={`flex gap-2 ${record.archived_at ? "" : "pr-12"}`}>
+            <div className={`flex gap-2 ${record.archived_at ? "" : "pe-12"}`}>
               {record.archived_at ? (
                 <>
                   <UnarchiveButton record={record} />
@@ -91,7 +91,7 @@ const DealShowContent = () => {
           </div>
 
           <div className="flex gap-8 m-4">
-            <div className="flex flex-col mr-10">
+            <div className="flex flex-col me-10">
               <span className="text-xs text-muted-foreground tracking-wide">
                 {translate("resources.deals.fields.expected_closing_date")}
               </span>
@@ -109,7 +109,7 @@ const DealShowContent = () => {
               </div>
             </div>
 
-            <div className="flex flex-col mr-10">
+            <div className="flex flex-col me-10">
               <span className="text-xs text-muted-foreground tracking-wide">
                 {translate("resources.deals.fields.amount")}
               </span>
@@ -119,7 +119,7 @@ const DealShowContent = () => {
             </div>
 
             {record.plan && (
-              <div className="flex flex-col mr-10">
+              <div className="flex flex-col me-10">
                 <span className="text-xs text-muted-foreground tracking-wide">
                   {translate("resources.deals.fields.plan")}
                 </span>
@@ -128,7 +128,7 @@ const DealShowContent = () => {
             )}
 
             {record.nb_branches_covered ? (
-              <div className="flex flex-col mr-10">
+              <div className="flex flex-col me-10">
                 <span className="text-xs text-muted-foreground tracking-wide">
                   {translate("resources.deals.fields.nb_branches_covered")}
                 </span>
@@ -136,7 +136,7 @@ const DealShowContent = () => {
               </div>
             ) : null}
 
-            <div className="flex flex-col mr-10">
+            <div className="flex flex-col me-10">
               <span className="text-xs text-muted-foreground tracking-wide">
                 {translate("resources.deals.fields.stage")}
               </span>
@@ -146,7 +146,7 @@ const DealShowContent = () => {
             </div>
 
             {record.stage === "lost" && record.lost_reason ? (
-              <div className="flex flex-col mr-10">
+              <div className="flex flex-col me-10">
                 <span className="text-xs text-muted-foreground tracking-wide">
                   {translate("resources.deals.fields.lost_reason")}
                 </span>
@@ -159,7 +159,7 @@ const DealShowContent = () => {
 
           {!!record.contact_ids?.length && (
             <div className="m-4">
-              <div className="flex flex-col min-h-12 mr-10">
+              <div className="flex flex-col min-h-12 me-10">
                 <span className="text-xs text-muted-foreground tracking-wide">
                   {translate("resources.deals.fields.contact_ids")}
                 </span>

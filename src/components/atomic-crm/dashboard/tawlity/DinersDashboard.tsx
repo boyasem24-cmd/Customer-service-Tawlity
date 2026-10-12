@@ -185,15 +185,15 @@ const TopDiners = () => {
       <Card className="p-2">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-muted-foreground text-left">
+            <tr className="text-muted-foreground text-start">
               <th className="font-normal px-2 py-1">#</th>
               <th className="font-normal px-2 py-1">
                 {translate("resources.diners.fields.name")}
               </th>
-              <th className="font-normal px-2 py-1 text-right">
+              <th className="font-normal px-2 py-1 text-end">
                 {translate("resources.diners.fields.total_reservations")}
               </th>
-              <th className="font-normal px-2 py-1 text-right">
+              <th className="font-normal px-2 py-1 text-end">
                 {translate("resources.diners.fields.no_show_rate")}
               </th>
               <th className="font-normal px-2 py-1" />
@@ -213,13 +213,13 @@ const TopDiners = () => {
                     {getDinerName(diner)}
                   </Link>
                 </td>
-                <td className="px-2 py-1.5 text-right tabular-nums">
+                <td className="px-2 py-1.5 text-end tabular-nums">
                   {diner.total_reservations}
                 </td>
-                <td className="px-2 py-1.5 text-right">
+                <td className="px-2 py-1.5 text-end">
                   <NoShowRate diner={diner} />
                 </td>
-                <td className="px-2 py-1.5 text-right">
+                <td className="px-2 py-1.5 text-end">
                   <DinerStatusBadge status={diner.status} />
                 </td>
               </tr>

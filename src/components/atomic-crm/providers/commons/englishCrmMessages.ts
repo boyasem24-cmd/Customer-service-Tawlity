@@ -339,6 +339,8 @@ export const englishCrmMessages = {
         secondary_email: "Secondary email",
         secondary_emails: "Secondary emails",
         administrator: "Admin",
+        support: "Support team",
+        support_help: "Support team members can see Diners data, like admins.",
         disabled: "Disabled",
       },
       create: {
@@ -500,7 +502,7 @@ export const englishCrmMessages = {
         creating: "Creating...",
         initial_user_created: "Initial user successfully created",
       },
-      welcome_title: "Welcome to Atomic CRM",
+      welcome_title: "Welcome to Tawlity CRM",
     },
     common: {
       account_manager: "Account manager",
@@ -546,7 +548,7 @@ export const englishCrmMessages = {
       latest_notes: "My Latest Notes",
       latest_notes_added_ago: "added %{timeAgo}",
       stepper: {
-        install: "Install Atomic CRM",
+        install: "Install Tawlity CRM",
         progress: "%{step}/3 done",
         whats_next: "What's next?",
       },
@@ -716,7 +718,7 @@ export const englishCrmMessages = {
         "Other addresses you send emails from. Leave one empty to remove it.",
       inbound: {
         description:
-          "You can start sending emails to your server's inbound email address, e.g. by adding it to the %{field} field. Atomic CRM will process the emails and add notes to the corresponding contacts.",
+          "You can start sending emails to your server's inbound email address, e.g. by adding it to the %{field} field. Tawlity CRM will process the emails and add notes to the corresponding contacts.",
         title: "Inbound email",
       },
       mcp: {
@@ -742,6 +744,33 @@ export const englishCrmMessages = {
   tawlity: {
     validation: {
       invalid_phone: "Must be a Kuwaiti number, e.g. +965 1234 5678",
+    },
+    config: {
+      deal_stages: {
+        lead: "Lead",
+        visited: "Visited",
+        "demo-done": "Demo done",
+        trial: "Trial",
+        negotiation: "Negotiation",
+        signed: "Signed",
+        live: "Live",
+        lost: "Lost",
+      },
+      task_types: {
+        visit: "Visit",
+        call: "Call",
+        whatsapp: "WhatsApp follow-up",
+        demo: "Demo",
+        onboarding: "Onboarding/Training",
+        "monthly-report": "Send monthly report",
+        "contract-renewal": "Contract renewal",
+      },
+      note_statuses: {
+        cold: "Cold",
+        warm: "Warm",
+        hot: "Hot",
+        "in-contract": "In Contract",
+      },
     },
     choices: {
       cuisine: {

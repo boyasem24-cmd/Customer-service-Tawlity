@@ -114,7 +114,7 @@ export const NoteMobile = ({
         <div className="inline-flex h-full items-center text-sm text-muted-foreground">
           {isCurrentUser ? translate("resources.notes.me") : salesName}{" "}
           {showStatus && note.status && (
-            <Status className="ml-2" status={note.status} />
+            <Status className="ms-2" status={note.status} />
           )}
         </div>
         <div className="flex-1" />

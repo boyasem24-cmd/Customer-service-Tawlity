@@ -108,7 +108,9 @@ export const CompanyInfo = ({ record }: { record: Company }) => {
       {record.phone_number && (
         <div className="flex flex-row items-center gap-1 min-h-[24px]">
           <Phone className="w-4 h-4" />
-          <TextField source="phone_number" />
+          <span dir="ltr">
+            <TextField source="phone_number" />
+          </span>
         </div>
       )}
     </AsideSection>

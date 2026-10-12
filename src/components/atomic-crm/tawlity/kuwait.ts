@@ -8,12 +8,17 @@
 export const KWD_CURRENCY = "KWD";
 export const DEFAULT_COUNTRY = "Kuwait";
 
+// Left-to-right isolate: keeps "25.000 KWD" in order inside Arabic text
+const LTR = (text: string) => `\u2066${text}\u2069`;
+
 export const formatKWD = (amount: number | null | undefined): string => {
   const value = Number(amount ?? 0);
-  return `${value.toLocaleString("en-US", {
-    minimumFractionDigits: 3,
-    maximumFractionDigits: 3,
-  })} KWD`;
+  return LTR(
+    `${value.toLocaleString("en-US", {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3,
+    })} KWD`,
+  );
 };
 
 const pad = (n: number) => String(n).padStart(2, "0");

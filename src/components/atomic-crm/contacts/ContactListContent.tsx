@@ -115,7 +115,7 @@ const ContactItemContent = ({
     : null;
 
   return (
-    <div className="flex flex-row items-center pl-2 pr-4 py-2 hover:bg-muted transition-colors first:rounded-t-xl last:rounded-b-xl">
+    <div className="flex flex-row items-center ps-2 pe-4 py-2 hover:bg-muted transition-colors first:rounded-t-xl last:rounded-b-xl">
       <div
         className="px-4 py-3 flex items-center cursor-pointer"
         onClick={(e) => handleToggleItem(contact.id, e)}
@@ -175,7 +175,7 @@ const ContactItemContent = ({
           ) : null}
         </div>
         {contact.last_seen && (
-          <div className="text-right ml-4">
+          <div className="text-end ms-4">
             <div
               className="text-sm text-muted-foreground"
               title={contact.last_seen}
@@ -213,7 +213,7 @@ export const ContactListContentMobile = () => {
             key={index}
             className="flex flex-row items-center py-2 hover:bg-muted transition-colors first:rounded-t-xl last:rounded-b-xl"
           >
-            <div className="flex flex-row gap-4 items-center mr-4">
+            <div className="flex flex-row gap-4 items-center me-4">
               <Skeleton className="w-10 h-10 rounded-full" />
             </div>
             <div className="flex-1 min-w-0">

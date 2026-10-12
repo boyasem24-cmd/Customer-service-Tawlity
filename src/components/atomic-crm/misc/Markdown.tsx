@@ -60,12 +60,12 @@ export function Markdown({ children, className }: MarkdownProps) {
         "[&_h5]:text-base [&_h5]:font-semibold [&_h5]:mt-3 [&_h5]:mb-2 [&_h5:first-child]:mt-0",
         "[&_h6]:text-sm [&_h6]:font-semibold [&_h6]:mt-3 [&_h6]:mb-2 [&_h6:first-child]:mt-0",
         // Blockquotes
-        "[&_blockquote]:border-l-2 [&_blockquote]:pl-3 [&_blockquote]:my-2 [&_blockquote]:text-muted-foreground",
+        "[&_blockquote]:border-s-2 [&_blockquote]:ps-3 [&_blockquote]:my-2 [&_blockquote]:text-muted-foreground",
         // Links
         "[&_a]:text-primary [&_a]:underline [&_a:hover]:no-underline",
         // Lists
-        "[&_ul]:list-disc [&_ul]:ml-6 [&_ul]:my-2",
-        "[&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:my-2",
+        "[&_ul]:list-disc [&_ul]:ms-6 [&_ul]:my-2",
+        "[&_ol]:list-decimal [&_ol]:ms-6 [&_ol]:my-2",
         "[&_li]:my-1",
         "[&_ul_ul]:my-0 [&_ol_ol]:my-0 [&_ul_ol]:my-0 [&_ol_ul]:my-0",
         // Code
@@ -74,7 +74,7 @@ export function Markdown({ children, className }: MarkdownProps) {
         "[&_pre_code]:bg-transparent [&_pre_code]:p-0",
         // Tables
         "[&_table]:w-full [&_table]:border-collapse [&_table]:my-4",
-        "[&_th]:border [&_th]:border-border [&_th]:bg-muted [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold",
+        "[&_th]:border [&_th]:border-border [&_th]:bg-muted [&_th]:px-4 [&_th]:py-2 [&_th]:text-start [&_th]:font-semibold",
         "[&_td]:border [&_td]:border-border [&_td]:px-4 [&_td]:py-2",
         "[&_tr:nth-child(even)]:bg-muted/50",
         // Horizontal rule

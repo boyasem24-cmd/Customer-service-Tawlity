@@ -34,7 +34,7 @@ export function TagChip({ tag, onUnlink }: TagChipProps) {
             e.stopPropagation();
             onUnlink();
           }}
-          className="transition-colors p-0 ml-1 cursor-pointer"
+          className="transition-colors p-0 ms-1 cursor-pointer"
         >
           <X className="w-4 h-4 md:w-3 md:h-3" />
         </button>

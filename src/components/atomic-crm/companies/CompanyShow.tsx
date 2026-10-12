@@ -129,7 +129,7 @@ const CompanyShowContent = () => {
           <CardContent>
             <div className="flex mb-3">
               <CompanyAvatar />
-              <h5 className="text-xl ml-2 flex-1 flex items-center gap-2">
+              <h5 className="text-xl ms-2 flex-1 flex items-center gap-2">
                 {record.name}
                 <AccountStatusBadge status={record.account_status} />
                 {record.account_status === "live" ? (
@@ -247,7 +247,7 @@ const ContactsIterator = () => {
               state={{ from: location.pathname }}
               className="flex items-center justify-between hover:bg-muted py-2 transition-colors"
             >
-              <div className="mr-4">
+              <div className="me-4">
                 <Avatar />
               </div>
               <div className="flex-1 min-w-0">
@@ -266,7 +266,7 @@ const ContactsIterator = () => {
                 </div>
               </div>
               {contact.last_seen && (
-                <div className="text-right">
+                <div className="text-end">
                   <div className="text-sm text-muted-foreground">
                     {translate("crm.common.last_activity_with_date", {
                       date: formatRelativeDate(contact.last_seen, locale),
@@ -325,7 +325,7 @@ const DealsIterator = () => {
                     : ""}
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-end">
                 <div className="text-sm text-muted-foreground">
                   {translate("crm.common.last_activity_with_date", {
                     date: formatRelativeDate(deal.updated_at, locale),

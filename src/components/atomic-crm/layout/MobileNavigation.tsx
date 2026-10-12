@@ -14,7 +14,7 @@ import {
   Smartphone,
   Users,
 } from "lucide-react";
-import { useTranslate } from "ra-core";
+import { CanAccess, useTranslate } from "ra-core";
 import { Link, matchPath, useLocation, useMatch } from "react-router";
 import { ContactCreateSheet } from "../contacts/ContactCreateSheet";
 import { useState } from "react";
@@ -50,7 +50,7 @@ export const MobileNavigation = () => {
   return (
     <nav
       aria-label={translate("crm.navigation.label")}
-      className="fixed bottom-0 left-0 right-0 z-50 bg-secondary h-14"
+      className="fixed bottom-0 start-0 end-0 z-50 bg-secondary h-14"
       style={{
         // iOS bug: even though viewport is set correctly, the bottom safe area inset is not accounted for
         // So we manually add some padding to avoid the navigation being too close to the home bar
@@ -84,12 +84,14 @@ export const MobileNavigation = () => {
             label={translate("resources.tasks.name", { smart_count: 2 })}
             isActive={currentPath === "/tasks"}
           />
-          <NavigationButton
-            href="/diners"
-            Icon={Smartphone}
-            label={translate("resources.diners.name", { smart_count: 2 })}
-            isActive={currentPath === "/diners"}
-          />
+          <CanAccess resource="diners" action="list">
+            <NavigationButton
+              href="/diners"
+              Icon={Smartphone}
+              label={translate("resources.diners.name", { smart_count: 2 })}
+              isActive={currentPath === "/diners"}
+            />
+          </CanAccess>
           <SettingsButton />
         </>
       </div>

@@ -142,7 +142,7 @@ export const CreateSheet = ({
               <div
                 className={cn(
                   "flex items-center gap-2",
-                  headerActions && "pr-12",
+                  headerActions && "pe-12",
                 )}
               >
                 <SheetTitle className="min-w-0 flex-1 truncate">

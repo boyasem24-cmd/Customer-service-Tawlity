@@ -278,10 +278,10 @@ const ImportStats = ({
       <TableHeader>
         <TableRow>
           <TableHead className="w-25"></TableHead>
-          <TableHead className="text-right">
+          <TableHead className="text-end">
             {translate("crm.import.status.imported")}
           </TableHead>
-          <TableHead className="text-right">
+          <TableHead className="text-end">
             {translate("crm.import.status.failed")}
           </TableHead>
         </TableRow>
@@ -290,12 +290,12 @@ const ImportStats = ({
         {data.map((record) => (
           <TableRow key={record.entity}>
             <TableCell className="font-medium">{record.entity}</TableCell>
-            <TableCell className="text-right text-success">
+            <TableCell className="text-end text-success">
               {record.imported}
             </TableCell>
             <TableCell
               className={cn(
-                "text-right",
+                "text-end",
                 record.failed > 0 && "text-destructive",
               )}
             >

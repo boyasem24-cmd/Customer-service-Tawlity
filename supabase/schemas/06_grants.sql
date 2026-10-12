@@ -160,6 +160,35 @@ grant all on sequence public.tasks_id_seq to anon;
 grant all on sequence public.tasks_id_seq to authenticated;
 grant all on sequence public.tasks_id_seq to service_role;
 
+-- Tawlity: diner data is never available to anon (RLS also restricts it to
+-- admins and the support team)
+revoke all on table public.diners from anon;
+revoke all on table public.diner_tags from anon;
+revoke all on table public.diner_notes from anon;
+grant all on table public.diners to authenticated;
+grant all on table public.diners to service_role;
+grant all on table public.diner_tags to authenticated;
+grant all on table public.diner_tags to service_role;
+grant all on table public.diner_notes to authenticated;
+grant all on table public.diner_notes to service_role;
+grant all on sequence public.diners_id_seq to authenticated;
+grant all on sequence public.diners_id_seq to service_role;
+grant all on sequence public.diner_tags_id_seq to authenticated;
+grant all on sequence public.diner_tags_id_seq to service_role;
+grant all on sequence public.diner_notes_id_seq to authenticated;
+grant all on sequence public.diner_notes_id_seq to service_role;
+
+revoke all on function public.is_team_member() from public;
+grant execute on function public.is_team_member() to authenticated;
+grant execute on function public.is_team_member() to service_role;
+revoke all on function public.can_access_diners() from public;
+grant execute on function public.can_access_diners() to authenticated;
+grant execute on function public.can_access_diners() to service_role;
+grant all on function public.set_updated_at() to authenticated;
+grant all on function public.set_updated_at() to service_role;
+grant all on function public.handle_diner_tag_deleted() to authenticated;
+grant all on function public.handle_diner_tag_deleted() to service_role;
+
 -- Default privileges
 alter default privileges for role postgres in schema public grant all on sequences to postgres;
 alter default privileges for role postgres in schema public grant all on sequences to anon;

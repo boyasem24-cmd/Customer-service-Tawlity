@@ -22,7 +22,7 @@ import { TextInput } from "@/components/admin/text-input";
 
 import ImageEditorField from "../misc/ImageEditorField";
 import {
-  useConfigurationContext,
+  useRawConfigurationContext,
   useConfigurationUpdater,
   type ConfigurationContextValue,
 } from "../root/ConfigurationContext";
@@ -164,7 +164,7 @@ export const SettingsPage = () => {
 SettingsPage.path = "/settings";
 
 const SettingsForm = () => {
-  const config = useConfigurationContext();
+  const config = useRawConfigurationContext();
 
   const defaultValues = useMemo(
     () => ({
@@ -263,7 +263,7 @@ const SettingsFormFields = () => {
                   .getElementById(section.id)
                   ?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="block w-full text-left px-3 py-1 text-sm rounded-md hover:text-foreground hover:bg-muted transition-colors"
+              className="block w-full text-start px-3 py-1 text-sm rounded-md hover:text-foreground hover:bg-muted transition-colors"
             >
               {translate(section.label, { smart_count: 2 })}
             </button>
@@ -470,7 +470,7 @@ const SettingsFormFields = () => {
       </div>
 
       {/* Sticky save button */}
-      <div className="fixed bottom-0 left-0 right-0 border-t bg-background p-4">
+      <div className="fixed bottom-0 start-0 end-0 border-t bg-background p-4">
         <div className="max-w-screen-xl mx-auto flex gap-8 px-4">
           <div className="hidden md:block w-48 shrink-0" />
           <div className="flex-1 min-w-0 max-w-2xl flex justify-between">
@@ -487,7 +487,7 @@ const SettingsFormFields = () => {
                 })
               }
             >
-              <RotateCcw className="h-4 w-4 mr-1" />
+              <RotateCcw className="h-4 w-4 me-1" />
               {translate("crm.settings.reset_defaults")}
             </Button>
             <div className="flex gap-2">
@@ -499,7 +499,7 @@ const SettingsFormFields = () => {
                 {translate("ra.action.cancel")}
               </Button>
               <Button type="submit" disabled={isSubmitting}>
-                <Save className="h-4 w-4 mr-1" />
+                <Save className="h-4 w-4 me-1" />
                 {isSubmitting
                   ? translate("crm.settings.saving")
                   : translate("ra.action.save")}

@@ -24,6 +24,8 @@ export type SalesFormData = {
   first_name: string;
   last_name: string;
   administrator: boolean;
+  /** Support team member: can see Diners data */
+  support?: boolean;
   disabled: boolean;
 };
 
@@ -31,6 +33,8 @@ export type Sale = {
   first_name: string;
   last_name: string;
   administrator: boolean;
+  /** Support team member: can see Diners data (admins always can) */
+  support?: boolean;
   avatar?: RAFile;
   disabled?: boolean;
   user_id: string;

@@ -70,7 +70,7 @@ export const ResponsiveFilters = ({
               {activeFiltersCount > 0 && (
                 <Badge
                   variant="destructive"
-                  className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs flex items-center justify-center"
+                  className="absolute -top-1 -end-1 h-5 w-5 p-0 text-xs flex items-center justify-center"
                 >
                   {activeFiltersCount}
                 </Badge>
@@ -89,7 +89,7 @@ export const ResponsiveFilters = ({
               {children}
             </div>
             <SheetFooter className="-p-4 relative">
-              <div className="absolute -top-12 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+              <div className="absolute -top-12 start-0 end-0 h-8 bg-gradient-to-t from-background to-transparent pointer-events-none" />
               <div className="flex w-full gap-4">
                 <SheetClose asChild>
                   <Button

@@ -6,11 +6,22 @@ afterEach(() => {
 });
 
 describe("i18nProvider", () => {
-  it("registers en and fr locales", () => {
+  it("registers en, ar and fr locales", () => {
     expect(i18nProvider.getLocales?.()).toEqual([
       { locale: "en", name: "English" },
+      { locale: "ar", name: "العربية" },
       { locale: "fr", name: "Français" },
     ]);
+  });
+
+  it("translates crm and react-admin keys in arabic", async () => {
+    await i18nProvider.changeLocale("ar");
+
+    expect(i18nProvider.translate("crm.language")).toBe("اللغة");
+    expect(i18nProvider.translate("ra.action.save")).toBe("حفظ");
+    expect(
+      i18nProvider.translate("resources.companies.name", { smart_count: 2 }),
+    ).toBe("المطاعم");
   });
 
   it("translates the language key in french", async () => {

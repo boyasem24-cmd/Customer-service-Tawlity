@@ -86,7 +86,7 @@ const ChangePasswordButton = () => {
       className="w-full text-base h-auto"
       onClick={() => updatePassword()}
     >
-      <KeyRound className="size-5 mr-3" />
+      <KeyRound className="size-5 me-3" />
       {translate("crm.profile.password.change")}
     </Button>
   );
@@ -123,7 +123,7 @@ export const SettingsPageMobile = () => {
               className="w-full text-base h-auto"
               onClick={() => logout()}
             >
-              <LogOut className="size-5 mr-3" />
+              <LogOut className="size-5 me-3" />
               <Translate i18nKey="ra.auth.logout">Log out</Translate>
             </Button>
           </div>
@@ -402,7 +402,7 @@ const InlineEditRow = ({
             onChange={(e) => setEditValue(e.target.value)}
             onBlur={handleSave}
             onKeyDown={handleKeyDown}
-            className="bg-transparent text-right !text-base outline-none w-48"
+            className="bg-transparent text-end !text-base outline-none w-48"
           />
         </ItemActions>
       </Item>
@@ -537,7 +537,7 @@ const InboundEmailSection = () => {
       <SectionLabel>{translate("crm.profile.inbound.title")}</SectionLabel>
       <p className="text-sm text-muted-foreground mb-2 px-1">
         {translate("crm.profile.inbound.description", {
-          _: "You can start sending emails to your server's inbound email address, e.g. by adding it to the Cc: field. Atomic CRM will process the emails and add notes to the corresponding contacts.",
+          _: "You can start sending emails to your server's inbound email address, e.g. by adding it to the Cc: field. Tawlity CRM will process the emails and add notes to the corresponding contacts.",
           field: "Cc:",
         })}
       </p>

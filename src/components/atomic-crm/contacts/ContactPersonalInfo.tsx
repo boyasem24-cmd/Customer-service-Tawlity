@@ -64,7 +64,7 @@ export const ContactPersonalInfo = () => {
       </ArrayField>
 
       {record.has_newsletter && (
-        <p className="pl-6 py-1 text-sm text-muted-foreground">
+        <p className="ps-6 py-1 text-sm text-muted-foreground">
           {translate("resources.contacts.fields.has_newsletter")}
         </p>
       )}
@@ -89,7 +89,11 @@ export const ContactPersonalInfo = () => {
         <SingleFieldList className="flex-col gap-y-0">
           <PersonalInfoRow
             icon={<Phone className="w-4 h-4 text-muted-foreground" />}
-            primary={<TextField source="number" />}
+            primary={
+              <span dir="ltr">
+                <TextField source="number" />
+              </span>
+            }
             showType
           />
         </SingleFieldList>

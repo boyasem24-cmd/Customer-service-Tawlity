@@ -207,7 +207,7 @@ const SimpleListItemContent = <RecordType extends RaRecord = any>(
           </div>
 
           {!!tertiaryText && (
-            <div className="text-xs text-muted-foreground ml-2">
+            <div className="text-xs text-muted-foreground ms-2">
               {typeof tertiaryText === "string"
                 ? translate(tertiaryText, {
                     ...record,

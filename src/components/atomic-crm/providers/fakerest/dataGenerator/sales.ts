@@ -18,6 +18,8 @@ export const generateSales = (_: Db): Sale[] => {
       secondary_emails: [],
       password: "demo",
       administrator: false,
+      // the first teammate is on the support team (can see Diners)
+      support: id === 0,
       disabled: false,
     };
   });

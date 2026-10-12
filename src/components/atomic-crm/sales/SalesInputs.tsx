@@ -22,6 +22,10 @@ export function SalesInputs() {
         helperText={false}
       />
       <BooleanInput
+        source="support"
+        helperText="resources.sales.fields.support_help"
+      />
+      <BooleanInput
         source="disabled"
         readOnly={record?.id === identity?.id}
         helperText={false}

@@ -66,7 +66,11 @@ const DinerTable = () => {
           </div>
         )}
       />
-      <DataTable.Col source="phone" disableSort />
+      <DataTable.Col
+        source="phone"
+        disableSort
+        render={(diner) => <span dir="ltr">{diner.phone}</span>}
+      />
       <DataTable.Col
         source="signup_platform"
         render={(diner) => platformLabel(diner.signup_platform)}

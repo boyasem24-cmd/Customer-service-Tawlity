@@ -7,6 +7,17 @@ type CanAccessParams<
   record?: RecordType;
 };
 
+/** Diner (B2C) data is restricted to admins and the support team. */
+export const DINER_RESOURCES = ["diners", "diner_notes", "diner_tags"];
+
+export type CrmRole = "admin" | "support" | "user";
+
+export const getRole = (sale: {
+  administrator?: boolean;
+  support?: boolean;
+}): CrmRole =>
+  sale.administrator ? "admin" : sale.support ? "support" : "user";
+
 export const canAccess = <
   RecordType extends Record<string, any> = Record<string, any>,
 >(
@@ -15,6 +26,11 @@ export const canAccess = <
 ) => {
   if (role === "admin") {
     return true;
+  }
+
+  // Diners are visible to admins and support users only
+  if (DINER_RESOURCES.includes(params.resource)) {
+    return role === "support";
   }
 
   // Non admins can't access the sales resource

@@ -106,10 +106,10 @@ export const GlobalSearchButton = ({
           onClick={() => setOpen(true)}
           aria-label={translate("crm.search.title")}
           aria-keyshortcuts="Control+K Meta+K"
-          className="mr-2 w-40 justify-start bg-background px-3 font-normal text-muted-foreground lg:w-64"
+          className="me-2 w-40 justify-start bg-background px-3 font-normal text-muted-foreground lg:w-64"
         >
           <Search />
-          <span className="flex-1 text-left">
+          <span className="flex-1 text-start">
             {translate("crm.search.title")}
           </span>
           <kbd className="pointer-events-none hidden rounded border bg-muted px-1.5 font-sans text-[10px] font-medium lg:inline">
@@ -263,7 +263,7 @@ export const GlobalSearchDialog = ({
             }}
             // keep the text clear of the dialog's close button, drawn over the
             // input's right end
-            className="pr-8"
+            className="pe-8"
           />
           <CommandList
             className={isMobile ? "max-h-none flex-1" : "max-h-[60vh]"}
@@ -339,7 +339,7 @@ export const GlobalSearchDialog = ({
                                   />
                                 </span>
                                 {result.subtitle ? (
-                                  <span className="ml-auto shrink-0 text-xs text-muted-foreground">
+                                  <span className="ms-auto shrink-0 text-xs text-muted-foreground">
                                     {result.subtitle}
                                   </span>
                                 ) : null}

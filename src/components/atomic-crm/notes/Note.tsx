@@ -120,7 +120,7 @@ export const Note = ({
             { name: salesName },
           )}{" "}
           {showStatus && note.status && (
-            <Status className="ml-2" status={note.status} />
+            <Status className="ms-2" status={note.status} />
           )}
         </div>
         <span className={`${isHover ? "visible" : "invisible"}`}>

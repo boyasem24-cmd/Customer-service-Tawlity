@@ -231,7 +231,7 @@ export const AutocompleteInput = (
                   aria-labelledby={hasLabel ? uniqueId : undefined}
                   className={cn(
                     "w-full justify-between h-auto py-1.75 font-normal",
-                    isClearable && "pr-9",
+                    isClearable && "pe-9",
                   )}
                 >
                   {selectedChoice ? (
@@ -239,14 +239,14 @@ export const AutocompleteInput = (
                   ) : (
                     <span className="text-muted-foreground">{placeholder}</span>
                   )}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  <ChevronsUpDown className="ms-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
               {isClearable && (
                 <button
                   type="button"
                   aria-label={translate("ra.action.clear_input_value")}
-                  className="absolute right-8 top-1/2 -translate-y-1/2 text-muted-foreground opacity-50 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-sm"
+                  className="absolute end-8 top-1/2 -translate-y-1/2 text-muted-foreground opacity-50 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-sm"
                   onClick={handleReset}
                 >
                   <X className="h-4 w-4" />
@@ -304,7 +304,7 @@ export const AutocompleteInput = (
                         >
                           <Check
                             className={cn(
-                              "mr-2 h-4 w-4",
+                              "me-2 h-4 w-4",
                               field.value === getChoiceValue(choice)
                                 ? "opacity-100"
                                 : "opacity-0",

@@ -23,7 +23,7 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
 
   return (
     <div className="hidden sm:block w-92 min-w-92 text-sm">
-      <div className="mb-4 -ml-1">
+      <div className="mb-4 -ms-1">
         {link === "edit" ? (
           <EditButton label="resources.contacts.action.edit" />
         ) : (

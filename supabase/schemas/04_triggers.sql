@@ -83,3 +83,17 @@ create or replace trigger on_auth_user_created
 create or replace trigger on_auth_user_updated
     after update on auth.users
     for each row execute function public.handle_update_user();
+
+-- Tawlity: diners
+create or replace trigger set_diner_updated_at
+    before update on public.diners
+    for each row execute function public.set_updated_at();
+
+create or replace trigger set_diner_notes_sales_id_trigger
+    before insert on public.diner_notes
+    for each row execute function public.set_sales_id_default();
+
+-- Remove a deleted diner tag from all diners
+create or replace trigger on_diner_tag_deleted
+    after delete on public.diner_tags
+    for each row execute function public.handle_diner_tag_deleted();

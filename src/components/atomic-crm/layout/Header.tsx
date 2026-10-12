@@ -3,6 +3,7 @@ import { CanAccess, useTranslate, useUserMenu } from "ra-core";
 import { Link, matchPath, useLocation } from "react-router";
 import { RefreshButton } from "@/components/admin/refresh-button";
 import { ThemeModeToggle } from "@/components/admin/theme-mode-toggle";
+import { LocalesMenuButton } from "@/components/admin/locales-menu-button";
 import { UserMenu } from "@/components/admin/user-menu";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
@@ -51,7 +52,9 @@ const Header = () => {
                   src={lightModeLogo}
                   alt={title}
                 />
-                <h1 className="text-xl font-semibold">{title}</h1>
+                <h1 className="text-xl font-semibold text-primary font-wordmark">
+                  {title}
+                </h1>
               </Link>
               <div>
                 <nav className="flex items-end">
@@ -83,21 +86,24 @@ const Header = () => {
                       isActive={currentPath === "/deals"}
                     />
                   </NavSection>
-                  <NavSection
-                    label={translate("crm.navigation.diners_section")}
-                  >
-                    <NavigationTab
-                      label={translate("resources.diners.name", {
-                        smart_count: 2,
-                      })}
-                      to="/diners"
-                      isActive={currentPath === "/diners"}
-                    />
-                  </NavSection>
+                  <CanAccess resource="diners" action="list">
+                    <NavSection
+                      label={translate("crm.navigation.diners_section")}
+                    >
+                      <NavigationTab
+                        label={translate("resources.diners.name", {
+                          smart_count: 2,
+                        })}
+                        to="/diners"
+                        isActive={currentPath === "/diners"}
+                      />
+                    </NavSection>
+                  </CanAccess>
                 </nav>
               </div>
               <div className="flex items-center">
                 <GlobalSearchButton />
+                <LocalesMenuButton />
                 <ThemeModeToggle />
                 <RefreshButton />
                 <UserMenu>
@@ -128,7 +134,7 @@ const NavSection = ({
   label: string;
   children: React.ReactNode;
 }) => (
-  <div className="flex flex-col items-stretch border-l border-secondary-foreground/15 ml-2 pl-2">
+  <div className="flex flex-col items-stretch border-s border-secondary-foreground/15 ms-2 ps-2">
     <span className="px-6 pt-1 text-[10px] font-semibold uppercase tracking-wider text-secondary-foreground/50 leading-none">
       {label}
     </span>
@@ -149,7 +155,7 @@ const NavigationTab = ({
     to={to}
     className={`px-5 pt-1.5 pb-2.5 text-sm font-medium transition-colors border-b-2 ${
       isActive
-        ? "text-secondary-foreground border-secondary-foreground"
+        ? "text-secondary-foreground border-highlight"
         : "text-secondary-foreground/70 border-transparent hover:text-secondary-foreground/80"
     }`}
   >

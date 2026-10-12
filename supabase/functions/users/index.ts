@@ -20,10 +20,12 @@ async function updateSaleDisabled(user_id: string, disabled: boolean) {
 async function updateSaleAdministrator(
   user_id: string,
   administrator: boolean,
+  support?: boolean,
 ) {
   const { data: sales, error: salesError } = await supabaseAdmin
     .from("sales")
-    .update({ administrator })
+    // support: Tawlity support team member, allowed to see Diners data
+    .update({ administrator, support: support ?? false })
     .eq("user_id", user_id)
     .select("*");
 
@@ -43,6 +45,7 @@ async function createSale(
     last_name: string;
     disabled: boolean;
     administrator: boolean;
+    support?: boolean;
   },
 ) {
   const { data: sales, error: salesError } = await supabaseAdmin
@@ -127,8 +130,15 @@ async function updateSaleAvatar(user_id: string, avatar: string) {
 }
 
 async function inviteUser(req: Request, currentUserSale: any) {
-  const { email, password, first_name, last_name, disabled, administrator } =
-    await req.json();
+  const {
+    email,
+    password,
+    first_name,
+    last_name,
+    disabled,
+    administrator,
+    support,
+  } = await req.json();
 
   if (!currentUserSale.administrator) {
     return createErrorResponse(401, "Not Authorized");
@@ -192,6 +202,7 @@ async function inviteUser(req: Request, currentUserSale: any) {
         last_name,
         disabled,
         administrator,
+        support: support ?? false,
       });
 
       return new Response(
@@ -233,7 +244,7 @@ async function inviteUser(req: Request, currentUserSale: any) {
 
   try {
     await updateSaleDisabled(user.id, disabled);
-    const sale = await updateSaleAdministrator(user.id, administrator);
+    const sale = await updateSaleAdministrator(user.id, administrator, support);
 
     return new Response(
       JSON.stringify({
@@ -258,6 +269,7 @@ async function patchUser(req: Request, currentUserSale: any) {
     last_name,
     avatar,
     administrator,
+    support,
     disabled,
   } = await req.json();
   const { data: sale } = await supabaseAdmin
@@ -388,7 +400,11 @@ async function patchUser(req: Request, currentUserSale: any) {
 
   try {
     await updateSaleDisabled(data.user.id, disabled);
-    const sale = await updateSaleAdministrator(data.user.id, administrator);
+    const sale = await updateSaleAdministrator(
+      data.user.id,
+      administrator,
+      support,
+    );
     return new Response(
       JSON.stringify({
         data: sale,

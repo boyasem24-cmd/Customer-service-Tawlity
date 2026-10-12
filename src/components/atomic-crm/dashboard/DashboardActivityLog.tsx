@@ -11,7 +11,7 @@ export function DashboardActivityLog() {
   return (
     <div className="flex flex-col">
       <div className="flex items-center mb-4 md:mb-2">
-        <div className="mr-3 flex">
+        <div className="me-3 flex">
           <Clock className="text-muted-foreground w-6 h-6" />
         </div>
         <h2 className="text-xl font-semibold text-muted-foreground">

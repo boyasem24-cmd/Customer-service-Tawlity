@@ -6,21 +6,26 @@ import { ErrorBoundary } from "react-error-boundary";
 
 import { DataImportProvider } from "../dataImport/DataImportProvider";
 import { useConfigurationLoader } from "../root/useConfigurationLoader";
+import { useDocumentDirection } from "./useDocumentDirection";
+import { DirectionProvider } from "@radix-ui/react-direction";
 import { MobileNavigation } from "./MobileNavigation";
 import { PullToRefresh } from "./PullToRefresh";
 
 export const MobileLayout = ({ children }: { children: ReactNode }) => {
   useConfigurationLoader();
+  const dir = useDocumentDirection();
   return (
-    <DataImportProvider>
-      <PullToRefresh />
-      <ErrorBoundary FallbackComponent={Error}>
-        <Suspense fallback={<Skeleton className="h-12 w-12 rounded-full" />}>
-          {children}
-        </Suspense>
-      </ErrorBoundary>
-      <MobileNavigation />
-      <Notification mobileOffset={{ bottom: "72px" }} />
-    </DataImportProvider>
+    <DirectionProvider dir={dir}>
+      <DataImportProvider>
+        <PullToRefresh />
+        <ErrorBoundary FallbackComponent={Error}>
+          <Suspense fallback={<Skeleton className="h-12 w-12 rounded-full" />}>
+            {children}
+          </Suspense>
+        </ErrorBoundary>
+        <MobileNavigation />
+        <Notification mobileOffset={{ bottom: "72px" }} />
+      </DataImportProvider>
+    </DirectionProvider>
   );
 };

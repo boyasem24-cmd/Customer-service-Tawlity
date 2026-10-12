@@ -1,122 +1,103 @@
-# Atomic CRM
+# Tawlity CRM
 
-A full-featured CRM built with React, shadcn-admin-kit, and Supabase.
+Relationship-management and sales CRM for **Tawlity** ([tawlity.co](https://tawlity.co)), the restaurant reservation and waitlist platform in Kuwait. It is built on [Atomic CRM](https://github.com/marmelab/atomic-crm) (React, shadcn-admin-kit, Supabase).
 
-<https://github.com/user-attachments/assets/0d7554b5-49ef-41c6-bcc9-a76214fc5c99>
+The CRM keeps Tawlity's two sides of the business apart:
 
-Atomic CRM is free and open-source. You can test it online at <https://marmelab.com/atomic-crm-demo>.
+| Side | What it holds | Who can see it |
+| --- | --- | --- |
+| **Restaurants** (B2B) | Restaurants and holding groups, restaurant contacts, the onboarding pipeline, account management | Every team member |
+| **Diners** (B2C) | Users of the Tawlity app, their booking stats, segments, notes and support interactions | Admins and the support team only |
 
-## Features
+The operational admin panel (approving restaurants, managing tables) lives elsewhere and is not part of this CRM.
 
-- 📇 **Organize Contacts**: Keep all your contacts in one easily accessible place.
-- ⏰ **Create Tasks & Set Reminders**: Never miss a follow-up or deadline.
-- 📝 **Take Notes**: Capture important details and insights effortlessly.
-- ✉️ **Capture Emails**: CC Atomic CRM to automatically save communications as notes.
-- 📊 **Manage Deals**: Visualize and track your sales pipeline in a Kanban board.
-- 🔄 **Import & Export Data**: Easily transfer contacts in and out of the system.
-- 🔐 **Control Access**: Log in with Google, Azure, Keycloak, and Auth0.
-- 📜 **Track Activity History**: View all interactions in aggregated activity logs.
-- 🔗 **Integrate via API**: Connect seamlessly with other systems using our API.
-- 🛠️ **Customize Everything**: Add custom fields, change the theme, and replace any component to fit your needs.
-- 📦 **Stay Up To Date**: Pull the latest component updates into your fork via the Atomic CRM shadcn registry.
+## What's in it
 
-## Installation
+**Restaurants**
+- Restaurants with cuisine, governorate/area, branches, seating, price range (KD/KDD/KDDD), current booking system, Kuwait Gastronomy Association membership, Instagram, Google Maps link, lead source and a coloured account-status badge (Prospect, Onboarding, Live, Paused, Churned). Filters on governorate, cuisine, status and lead source.
+- Holding groups: a restaurant can belong to a holding company, whose page lists its brands and branches.
+- Restaurant contacts with role, preferred language (Arabic/English) and a primary-decision-maker flag.
+- **Pipeline**: Lead → Visited → Demo done → Trial → Negotiation → Signed → Live → Lost, with plan, monthly fee in KWD (3 decimals), branches covered and a lost reason that is required on Lost (also when a card is dragged to the Lost column).
+- **Account** tab on each restaurant: contract start and renewal dates, plan, monthly fee, onboarding checklist, last monthly report sent, and a manual Green/Amber/Red health score with a note (Live restaurants).
+- Task types: Visit, Call, WhatsApp follow-up, Demo, Onboarding/Training, Send monthly report, Contract renewal.
 
-To run this project locally, you will need the following tools installed on your computer:
+**Diners**
+- Diner profiles: phone (+965, unique), email, language, gender, signup date and platform, acquisition source, reservations / no-shows / cancellations, last booking, favourite restaurants, WhatsApp marketing consent, account status and segments (VIP, Frequent no-show, New...).
+- List with search by name or phone, filters (status, segment, platform, acquisition source, language, inactive 30+ days, WhatsApp opt-in) and a no-show rate column, in red above 20%.
+- Diner page with stats, favourite restaurants and a notes & support timeline (support items can be marked resolved).
+- CSV import that matches on the phone number, so re-importing updates diners instead of duplicating them. A sample CSV is offered in the import dialog.
 
-- Make
-- Node 24 LTS
-- Docker (required by Supabase)
+**Dashboards**: a Restaurants tab (accounts per status, pipeline value, MRR from Live restaurants, deals won/lost this month, restaurants by governorate, upcoming tasks, Live restaurants with Red health or a renewal in the next 30 days) and a Diners tab (totals, new this month, active/inactive, split by platform and acquisition source, overall no-show rate, open support interactions, top 10 diners).
 
-Fork the [`marmelab/atomic-crm`](https://github.com/marmelab/atomic-crm) repository to your user/organization, then clone it locally:
+**Kuwait conventions**: KWD with 3 decimals (`25.000 KWD`), phone numbers validated and stored as `+965 XXXX XXXX`, dates shown as DD/MM/YYYY.
 
-```sh
-git clone https://github.com/[username]/atomic-crm.git
-```
+**Branding & language**: cream / forest green / yellow Tawlity theme with Georgia headings, and an Arabic interface with right-to-left layout (language menu in the header; English is the default).
 
-Install dependencies:
+## Try it in demo mode
 
-```sh
-cd atomic-crm
-make install
-```
-
-This will install the dependencies for the frontend and the backend, including a local Supabase instance.
-
-Once your app is configured, start the app locally with the following command:
+Demo mode runs entirely in the browser with generated Kuwaiti sample data; nothing is saved and nothing connects to a database.
 
 ```sh
-make start
+npm install
+npm run dev:demo      # http://localhost:5174 (log in with janedoe@atomic.dev / demo)
 ```
 
-This will start the Vite dev server for the frontend, the local Supabase instance for the API, and a Postgres database (thanks to Docker).
+## Run it on a real database
 
-You can then access the app via [http://localhost:5173/](http://localhost:5173/). You will be prompted to create the first user.
+Requirements: Node 24, Docker (for local Supabase), Make.
 
-If you need debug the backend, you can access the following services:
-
-- Supabase dashboard: [http://localhost:54323/](http://localhost:54323/)
-- REST API: [http://127.0.0.1:54321](http://127.0.0.1:54321)
-- Attachments storage: [http://localhost:54323/project/default/storage/buckets/attachments](http://localhost:54323/project/default/storage/buckets/attachments)
-- Inbucket email testing service: [http://localhost:54324/](http://localhost:54324/)
-
-## Documentation
-
-The user and developer documentation for this project is available [in the `doc/` directory](./doc/). You can also read it online at [https://marmelab.com/atomic-crm/doc/](https://marmelab.com/atomic-crm/doc/).
-
-## Testing Changes
-
-This project contains unit tests and e2e. 
-Run unit test with the following command:
+### Locally
 
 ```sh
-make test
+make install          # npm dependencies
+make start            # local Supabase + Vite on http://localhost:5173
 ```
 
-Run e2e test with:
+The first `supabase start` (and every `make supabase-reset-database`, which wipes the local database) applies every migration in `supabase/migrations/` and loads `supabase/seed.sql` plus the fictional Tawlity sample data in `supabase/seeds/tawlity_sample_data.sql` (15 restaurants incl. 2 holding groups, 25 restaurant contacts, 20 deals across all stages, 50 diners). Remove the sample file from `[db.seed]` in `supabase/config.toml` once you load real data.
+
+The first account you create in the app becomes the administrator.
+
+### On Supabase cloud (production)
 
 ```sh
-make test-e2e
+make supabase-remote-init   # creates/links the project, pushes the migrations, deploys the edge functions, writes .env.production.local
+make build                  # then deploy dist/ to your static host
 ```
 
-Note: the `make test-e2e` will run the the e2e test in ui mode against a vite server with hot reload for ease of development. On the CI the e2e test will be run against the built app. If you need to run the test against the built file instead. You can run:
+If the project already exists, the equivalent manual steps are:
 
 ```sh
-make start-e2e-ci # To launch the CI e2e environment (serving the built app)
-# followed by
-npx playwright test --ui
+npx supabase link --project-ref <project-ref>
+npx supabase db push                       # applies supabase/migrations, incl. 20261012120000_tawlity_crm.sql
+npx supabase functions deploy users        # the users function now saves the "support" flag
 ```
 
-You can add your own unit tests powered by Jest anywhere in the `src` directory. The test files should be named `*.test.tsx` or `*.test.ts`.
-And you can also add your own e2e test. The e2e test files should be placed inside the `./e2e` folder
+To load the sample data into the cloud database, run `supabase/seeds/tawlity_sample_data.sql` once in the Supabase SQL editor (it expects empty tables). Skip it if you're going straight to real data.
 
-## Shadcn Registry
+The front end needs `VITE_SUPABASE_URL` and `VITE_SB_PUBLISHABLE_KEY` (see `.env.development`).
 
-Atomic CRM components are published as a [shadcn registry](https://marmelab.com/atomic-crm/r/atomic-crm.json). This registry can't be used to bootstrap a new CRM app (use [Installation](#installation) for that), but it's a convenient way to keep the components you forked in sync with upstream.
+### Access rules (row-level security)
 
-### For Users: Getting Updates
+- Only **signed-in team members** (a row in `sales` that is not disabled) can read or write CRM data. Anonymous visitors and signed-in users who aren't team members see nothing.
+- **Diners**, diner notes and diner segments are restricted to **admins** and users with the **Support team** flag (Users page → edit a user). Other team members don't see the Diners section at all, and the database refuses their queries.
+- After creating the first (admin) account, **turn off "Allow new users to sign up"** in Supabase → Authentication → Sign In / Providers, and add teammates from the Users page. Otherwise anyone could sign up and become a team member.
 
-Once you've forked and customized Atomic CRM, periodically run the following command to pull in the latest component updates:
+## Development
 
 ```sh
-npx shadcn add https://marmelab.com/atomic-crm/r/atomic-crm.json -o -y
+npm run typecheck
+make lint
+make test             # unit tests (Vitest, browser mode)
 ```
 
-- `-o` overwrites the files that changed upstream
-- `-y` skips the confirmation prompt (prefer this over piping `yes |` into the command)
+- Tawlity-specific code: `src/components/atomic-crm/tawlity/` (choices, Kuwait formatting/validation), `diners/`, `dashboard/tawlity/`, `companies/AccountPanel.tsx`, `companies/BrandsTab.tsx`.
+- Translations: `providers/commons/englishCrmMessages.ts` and `arabicCrmMessages.ts` (typed against the English file, so a missing Arabic key fails the type check).
+- Database: declarative schema in `supabase/schemas/` and the matching migration `supabase/migrations/20261012120000_tawlity_crm.sql`.
+- Demo data generator: `src/components/atomic-crm/providers/fakerest/dataGenerator/`.
+- The original build prompts are in `docs/Tawlity_CRM_Prompts.md`.
 
-Commit your work before running this command so you can review the diff and resolve any conflict with your own customizations. See the [Getting Updates](https://marmelab.com/atomic-crm/doc/developers/getting-updates/) chapter of the documentation for details.
-
-### For Contributors: How The Registry Is Built
-
-The registry file is kept up to date automatically:
-
-- The `registry.json` file is automatically generated by the `scripts/generate-registry.mjs` script as a pre-commit hook (`make registry-gen`).
-- The `https://marmelab.com/atomic-crm/r/atomic-crm.json` file is automatically built and published by the CI/CD pipeline (`make registry-build`, `make registry-deploy`).
-
-> [!WARNING]  
-> If the `registry.json` misses some changes you made, you MUST update the `scripts/generate-registry.mjs` to include those changes.
+Atomic CRM's own documentation still applies to everything not listed above: see [`doc/`](./doc/) or <https://marmelab.com/atomic-crm/doc/>.
 
 ## License
 
-This project is licensed under the MIT License, courtesy of [Marmelab](https://marmelab.com). See the [LICENSE.md](./LICENSE.md) file for details.
+MIT, based on Atomic CRM by [Marmelab](https://marmelab.com). See [LICENSE.md](./LICENSE.md).

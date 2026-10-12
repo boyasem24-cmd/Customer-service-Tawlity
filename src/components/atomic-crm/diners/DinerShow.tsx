@@ -115,7 +115,7 @@ const DinerAside = ({ diner }: { diner: Diner }) => {
 
   return (
     <div className="w-full md:w-92 md:min-w-92 text-sm">
-      <div className="mb-4 -ml-1">
+      <div className="mb-4 -ms-1">
         <EditButton label="resources.diners.action.edit" />
       </div>
 
@@ -125,7 +125,7 @@ const DinerAside = ({ diner }: { diner: Diner }) => {
         {diner.phone ? (
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-muted-foreground" />
-            <a href={`tel:${waNumber}`} className="hover:underline">
+            <a href={`tel:${waNumber}`} className="hover:underline" dir="ltr">
               {diner.phone}
             </a>
             {waNumber ? (
