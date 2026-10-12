@@ -551,6 +551,29 @@ export const englishCrmMessages = {
         whats_next: "What's next?",
       },
       upcoming_tasks: "Upcoming Tasks",
+      tawlity: {
+        pipeline_value: "Pipeline value (monthly)",
+        open_deals: "%{smart_count} open deal |||| %{smart_count} open deals",
+        mrr: "MRR from Live restaurants",
+        live_restaurants:
+          "%{smart_count} Live restaurant |||| %{smart_count} Live restaurants",
+        won_this_month: "Deals won this month",
+        lost_this_month: "Deals lost this month",
+        by_governorate: "Restaurants by governorate",
+        needs_attention: "Live restaurants needing attention",
+        nothing_needs_attention:
+          "No Live restaurant has a Red health score or a renewal in the next 30 days.",
+        renews_on: "Renews %{date}",
+        total_diners: "Total diners",
+        new_this_month: "New this month",
+        no_show_rate: "Overall no-show rate",
+        no_shows_of_reservations:
+          "%{no_shows} no-shows / %{reservations} reservations",
+        open_support: "Open support interactions",
+        by_platform: "Diners by platform",
+        by_acquisition_source: "Diners by acquisition source",
+        top_diners: "Top 10 diners by reservations",
+      },
     },
     data_import: {
       button: "Import CSV",

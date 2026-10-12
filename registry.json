@@ -42,6 +42,22 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/tawlity/kuwait.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/tawlity/choices.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/tawlity/HealthDot.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/tawlity/ChoiceLabel.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/tasks/tasksPredicate.ts",
           "type": "registry:component"
         },
@@ -298,11 +314,19 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/providers/fakerest/dataGenerator/kuwaitData.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/providers/fakerest/dataGenerator/index.ts",
           "type": "registry:component"
         },
         {
           "path": "src/components/atomic-crm/providers/fakerest/dataGenerator/finalize.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/providers/fakerest/dataGenerator/diners.ts",
           "type": "registry:component"
         },
         {
@@ -582,6 +606,54 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/diners/useDinerImport.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/diners/index.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/diners/dinerModel.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/diners/NoShowRate.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/diners/DinerTagsList.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/diners/DinerStatusBadge.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/diners/DinerShow.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/diners/DinerNotes.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/diners/DinerList.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/diners/DinerInputs.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/diners/DinerEdit.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/diners/DinerCreate.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/deals/stages.ts",
           "type": "registry:component"
         },
@@ -730,6 +802,26 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/dashboard/tawlity/useCounts.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/dashboard/tawlity/StatTile.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/dashboard/tawlity/RestaurantsDashboard.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/dashboard/tawlity/DinersDashboard.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/dashboard/tawlity/BarList.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/contacts/useContactImport.tsx",
           "type": "registry:component"
         },
@@ -834,6 +926,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/companies/RestaurantInfo.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/companies/GridList.tsx",
           "type": "registry:component"
         },
@@ -878,7 +974,15 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/companies/BrandsTab.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/companies/AutocompleteCompanyInput.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/companies/AccountPanel.tsx",
           "type": "registry:component"
         },
         {

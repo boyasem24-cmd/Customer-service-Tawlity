@@ -1,66 +1,41 @@
-import { useGetList } from "ra-core";
+import { useTranslate } from "ra-core";
+import { useSearchParams } from "react-router";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import type { Contact, ContactNote } from "../types";
-import { DashboardActivityLog } from "./DashboardActivityLog";
-import { DashboardStepper } from "./DashboardStepper";
-import { DealsChart } from "./DealsChart";
-import { HotContacts } from "./HotContacts";
-import { TasksList } from "./TasksList";
-import { Welcome } from "./Welcome";
+import { DinersDashboard } from "./tawlity/DinersDashboard";
+import { RestaurantsDashboard } from "./tawlity/RestaurantsDashboard";
 
+/**
+ * Two separate dashboards, one per side of the business. The active tab lives
+ * in the URL (?tab=diners) so it survives a refresh and can be shared.
+ */
 export const Dashboard = () => {
-  const {
-    data: dataContact,
-    total: totalContact,
-    isPending: isPendingContact,
-  } = useGetList<Contact>("contacts", {
-    pagination: { page: 1, perPage: 1 },
-  });
-
-  const { total: totalContactNotes, isPending: isPendingContactNotes } =
-    useGetList<ContactNote>("contact_notes", {
-      pagination: { page: 1, perPage: 1 },
-    });
-
-  const { total: totalDeal, isPending: isPendingDeal } = useGetList<Contact>(
-    "deals",
-    {
-      pagination: { page: 1, perPage: 1 },
-    },
-  );
-
-  const isPending = isPendingContact || isPendingContactNotes || isPendingDeal;
-
-  if (isPending) {
-    return null;
-  }
-
-  if (!totalContact) {
-    return <DashboardStepper step={1} />;
-  }
-
-  if (!totalContactNotes) {
-    return <DashboardStepper step={2} contactId={dataContact?.[0]?.id} />;
-  }
+  const translate = useTranslate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = searchParams.get("tab") === "diners" ? "diners" : "restaurants";
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-1">
-      <div className="md:col-span-3">
-        <div className="flex flex-col gap-4">
-          {import.meta.env.VITE_IS_DEMO === "true" ? <Welcome /> : null}
-          <HotContacts />
-        </div>
-      </div>
-      <div className="md:col-span-6">
-        <div className="flex flex-col gap-6">
-          {totalDeal ? <DealsChart /> : null}
-          <DashboardActivityLog />
-        </div>
-      </div>
-
-      <div className="md:col-span-3">
-        <TasksList />
-      </div>
-    </div>
+    <Tabs
+      value={tab}
+      onValueChange={(value) =>
+        setSearchParams(value === "diners" ? { tab: "diners" } : {})
+      }
+      className="mt-2 gap-4"
+    >
+      <TabsList>
+        <TabsTrigger value="restaurants" className="px-6">
+          {translate("crm.navigation.restaurants_section")}
+        </TabsTrigger>
+        <TabsTrigger value="diners" className="px-6">
+          {translate("crm.navigation.diners_section")}
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="restaurants">
+        <RestaurantsDashboard />
+      </TabsContent>
+      <TabsContent value="diners">
+        <DinersDashboard />
+      </TabsContent>
+    </Tabs>
   );
 };
