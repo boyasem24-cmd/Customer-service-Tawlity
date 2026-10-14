@@ -974,6 +974,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/companies/CompanyListMobile.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/companies/CompanyListFilter.tsx",
           "type": "registry:component"
         },
