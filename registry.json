@@ -822,11 +822,23 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/dashboard/tawlity/openTasks.ts",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/dashboard/tawlity/TasksPanel.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/dashboard/tawlity/StatTile.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/components/atomic-crm/dashboard/tawlity/RestaurantsDashboard.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/dashboard/tawlity/FollowUpRow.tsx",
           "type": "registry:component"
         },
         {
