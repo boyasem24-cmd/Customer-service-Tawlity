@@ -48,6 +48,7 @@ import {
 import { AccountStatusBadge } from "../tawlity/ChoiceLabel";
 import { BrandsTab } from "./BrandsTab";
 import { AccountPanel } from "./AccountPanel";
+import { RecommendationsPanel } from "./RecommendationsPanel";
 import { HealthDot } from "../tawlity/HealthDot";
 import { formatMoney } from "../tawlity/kuwait";
 
@@ -91,6 +92,9 @@ const CompanyShowContentMobile = () => {
         <div className="mb-4">
           <AccountStatusBadge status={record.account_status} />
         </div>
+        <div className="mb-6">
+          <RecommendationsPanel />
+        </div>
         <RestaurantInfo record={record} />
         <HoldingInfo record={record} />
         <CompanyInfo record={record} />
@@ -124,7 +128,8 @@ const CompanyShowContent = () => {
 
   return (
     <div className="mt-2 flex pb-2 gap-8">
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col gap-4">
+        <RecommendationsPanel />
         <Card>
           <CardContent>
             <div className="flex mb-3">

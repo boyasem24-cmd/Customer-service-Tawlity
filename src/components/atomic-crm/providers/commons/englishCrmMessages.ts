@@ -776,6 +776,151 @@ export const englishCrmMessages = {
     validation: {
       invalid_phone: "Must be a Kuwaiti number, e.g. +965 1234 5678",
     },
+    recommendations: {
+      panel: {
+        title: "Recommended next actions",
+        empty: "Nothing to suggest right now: this account is on track.",
+        create_task: "Create task",
+        planned: "Task already planned",
+        needs_contact: "Add a contact first",
+        task_created: "Task created for %{name}",
+      },
+      priority: {
+        high: "High",
+        medium: "Medium",
+        low: "Low",
+      },
+      goal: {
+        acquisition: "Win the account",
+        retention: "Keep the account",
+      },
+      find_contact: {
+        title: "Find the right person to talk to",
+        reason: "No contact is recorded for this restaurant yet.",
+        task: "Visit the restaurant and get the owner or manager's details",
+      },
+      find_decision_maker: {
+        title: "Identify the decision maker",
+        reason: "None of the contacts is marked as the decision maker.",
+        task: "Ask %{first} who signs off on new systems",
+      },
+      qualify_and_open_deal: {
+        title: "Qualify the restaurant and open a deal",
+        reason: "This prospect has no deal in the pipeline.",
+        task: "Visit %{first}: check fit and open a deal",
+      },
+      revive_stalled_deal: {
+        title: "Revive the stalled deal",
+        reason: "The deal has not moved for %{days} days.",
+        task: "Call %{first} to restart the conversation",
+      },
+      stage_lead: {
+        title: "Visit the restaurant",
+        reason: "The deal is still a lead: a first visit moves it forward.",
+        task: "First visit with %{first}",
+      },
+      stage_visited: {
+        title: "Book a demo with the owner",
+        reason: "The restaurant was visited but has not seen a demo yet.",
+        task: "Book a Tawlity demo with %{first}",
+      },
+      stage_demo_done: {
+        title: "Follow up on the demo",
+        reason: "The demo is done: follow up while it is fresh.",
+        task: "WhatsApp %{first}: questions after the demo, propose a trial",
+      },
+      stage_trial: {
+        title: "Review the trial results",
+        reason: "The restaurant is on trial: show the bookings it brought.",
+        task: "Call %{first} to review the trial bookings",
+      },
+      stage_negotiation: {
+        title: "Close the deal",
+        reason: "The deal is in negotiation: settle the plan and fee.",
+        task: "Call %{first} to agree on the plan and sign",
+      },
+      competitor_comparison: {
+        title: "Prepare a comparison with their current system",
+        reason: "They already use a competing booking system.",
+        task: "Show %{first} a side-by-side comparison with their system",
+      },
+      pitch_multi_branch: {
+        title: "Pitch all %{branches} branches",
+        reason:
+          "The restaurant has %{branches} branches: price the full group.",
+        task: "Prepare a multi-branch offer for %{first}",
+      },
+      onboarding_menu_uploaded: {
+        title: "Upload the menu",
+        reason: "Onboarding is blocked: the menu is not uploaded yet.",
+        task: "Get the menu from %{first} and upload it",
+      },
+      onboarding_tables_configured: {
+        title: "Configure the tables",
+        reason: "Onboarding next step: the floor plan and tables.",
+        task: "Set up the tables with %{first}",
+      },
+      onboarding_staff_trained: {
+        title: "Train the staff",
+        reason: "Onboarding next step: the floor team must know the app.",
+        task: "Training session for %{first}'s staff",
+      },
+      onboarding_first_live_booking: {
+        title: "Get the first live booking",
+        reason: "Everything is set up but no live booking came in yet.",
+        task: "Check the first live booking with %{first}",
+      },
+      onboarding_listed_in_app: {
+        title: "List the restaurant in the app",
+        reason: "Last onboarding step: make it visible to diners.",
+        task: "Confirm the app listing with %{first}",
+      },
+      health_red: {
+        title: "Visit within 7 days",
+        reason: "The account is in Red: there is a risk of losing it.",
+        task: "Rescue visit with %{first}",
+      },
+      health_amber: {
+        title: "Call to clear the concerns",
+        reason: "The account is in Amber.",
+        task: "Call %{first} about what is not working",
+      },
+      health_missing: {
+        title: "Assess the account health",
+        reason: "No health score is set for this Live account.",
+        task: "Check in with %{first} and set the health score",
+      },
+      renewal_due: {
+        title: "Prepare the renewal",
+        reason: "The contract renews in %{days} days.",
+        task: "Renewal discussion with %{first}",
+      },
+      send_monthly_report: {
+        title: "Send the monthly report",
+        reason: "No report was sent in the last 35 days.",
+        task: "Send the monthly report to %{first}",
+      },
+      check_in: {
+        title: "Check in with the account",
+        reason: "Nothing was logged for this account in the last 30 days.",
+        task: "Check-in visit with %{first}",
+      },
+      upsell_pro: {
+        title: "Offer the Pro plan",
+        reason: "%{branches} branches on a starter plan: Pro fits better.",
+        task: "Present the Pro plan to %{first}",
+      },
+      paused_reopening: {
+        title: "Plan the reactivation",
+        reason: "The account is paused.",
+        task: "Call %{first} about reactivating Tawlity",
+      },
+      churned_win_back: {
+        title: "Try to win it back",
+        reason: "The account churned: a friendly check-in keeps the door open.",
+        task: "WhatsApp %{first} with what is new in Tawlity",
+      },
+    },
     config: {
       deal_stages: {
         lead: "Lead",
