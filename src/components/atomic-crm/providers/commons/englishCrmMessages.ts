@@ -735,6 +735,14 @@ export const englishCrmMessages = {
       pipeline: "Pipeline",
       restaurants_section: "Restaurants",
       diners_section: "Diners",
+      mobile: {
+        home: "Home",
+        contacts: "Contacts",
+        restaurants: "Restaurants",
+        tasks: "Tasks",
+        diners: "Diners",
+        settings: "Settings",
+      },
     },
     profile: {
       add_secondary_email: "Add an email",

@@ -740,6 +740,14 @@ export const arabicCrmMessages = {
       pipeline: "مسار المبيعات",
       restaurants_section: "المطاعم",
       diners_section: "الزبائن",
+      mobile: {
+        home: "الرئيسية",
+        contacts: "جهات الاتصال",
+        restaurants: "المطاعم",
+        tasks: "المهام",
+        diners: "الزبائن",
+        settings: "الإعدادات",
+      },
     },
     profile: {
       add_secondary_email: "إضافة بريد إلكتروني",

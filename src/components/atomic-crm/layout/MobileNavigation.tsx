@@ -12,6 +12,7 @@ import {
   Plus,
   Settings,
   Smartphone,
+  Store,
   Users,
 } from "lucide-react";
 import { CanAccess, useTranslate } from "ra-core";
@@ -61,34 +62,38 @@ export const MobileNavigation = () => {
           "calc(var(--spacing)) * 6" + (isPwa && isWebiOS ? " + 15px" : ""),
       }}
     >
-      <div className="flex justify-center">
+      <div className="flex justify-center px-1">
         <>
           <NavigationButton
             href="/"
             Icon={Home}
-            label={translate("ra.page.dashboard")}
+            label={translate("crm.navigation.mobile.home")}
             isActive={currentPath === "/"}
           />
           <NavigationButton
             href="/contacts"
             Icon={Users}
-            label={translate("resources.contacts.name", {
-              smart_count: 2,
-            })}
+            label={translate("crm.navigation.mobile.contacts")}
             isActive={currentPath === "/contacts"}
+          />
+          <NavigationButton
+            href="/companies"
+            Icon={Store}
+            label={translate("crm.navigation.mobile.restaurants")}
+            isActive={currentPath === "/companies"}
           />
           <CreateButton />
           <NavigationButton
             href="/tasks"
             Icon={ListTodo}
-            label={translate("resources.tasks.name", { smart_count: 2 })}
+            label={translate("crm.navigation.mobile.tasks")}
             isActive={currentPath === "/tasks"}
           />
           <CanAccess resource="diners" action="list">
             <NavigationButton
               href="/diners"
               Icon={Smartphone}
-              label={translate("resources.diners.name", { smart_count: 2 })}
+              label={translate("crm.navigation.mobile.diners")}
               isActive={currentPath === "/diners"}
             />
           </CanAccess>
@@ -114,13 +119,15 @@ const NavigationButton = ({
     asChild
     variant="ghost"
     className={cn(
-      "flex-col gap-1 h-auto py-2 px-1 rounded-md w-16",
+      "flex-col gap-0.5 h-auto py-1.5 px-0.5 rounded-md flex-1 min-w-0 max-w-16 overflow-visible",
       isActive ? null : "text-muted-foreground",
     )}
   >
     <Link to={href}>
       <Icon className="size-6" />
-      <span className="text-[0.6rem] font-medium">{label}</span>
+      <span className="text-[0.55rem] font-medium leading-tight w-full text-center whitespace-nowrap">
+        {label}
+      </span>
     </Link>
   </Button>
 );
@@ -153,10 +160,10 @@ const CreateButton = () => {
           <Button
             variant="default"
             size="icon"
-            className="h-16 w-16 rounded-full -mt-3"
+            className="h-12 w-12 shrink-0 rounded-full -mt-2 mx-1"
             aria-label={translate("ra.action.create")}
           >
-            <Plus className="size-10" />
+            <Plus className="size-7" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -199,7 +206,7 @@ const SettingsButton = () => {
     <NavigationButton
       href="/settings"
       Icon={Settings}
-      label={translate("crm.settings.title")}
+      label={translate("crm.navigation.mobile.settings")}
       isActive={isActive}
     />
   );
