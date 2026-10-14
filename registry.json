@@ -42,6 +42,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/tawlity/recommendations.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/tawlity/kuwait.ts",
           "type": "registry:component"
         },
@@ -955,6 +959,10 @@
         },
         {
           "path": "src/components/atomic-crm/companies/RestaurantInfo.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/companies/RecommendationsPanel.tsx",
           "type": "registry:component"
         },
         {
