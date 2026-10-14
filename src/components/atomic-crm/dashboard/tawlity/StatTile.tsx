@@ -9,6 +9,7 @@ export const StatTile = ({
   value,
   hint,
   to,
+  onClick,
   tone,
   isPending,
 }: {
@@ -16,6 +17,8 @@ export const StatTile = ({
   value: ReactNode;
   hint?: ReactNode;
   to?: string;
+  /** Makes the whole tile a button (e.g. to open a details panel) */
+  onClick?: () => void;
   tone?: "alert";
   isPending?: boolean;
 }) => {
@@ -23,7 +26,7 @@ export const StatTile = ({
     <Card
       className={cn(
         "p-4 gap-1 h-full",
-        to && "hover:bg-muted transition-colors",
+        (to || onClick) && "hover:bg-muted transition-colors",
       )}
     >
       <span className="text-sm text-muted-foreground">{label}</span>
@@ -40,6 +43,17 @@ export const StatTile = ({
       ) : null}
     </Card>
   );
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className="text-start rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {content}
+      </button>
+    );
+  }
   return to ? (
     <Link to={to} className="no-underline">
       {content}

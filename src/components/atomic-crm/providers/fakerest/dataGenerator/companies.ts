@@ -163,6 +163,12 @@ const applyAccountData = (restaurant: Required<Company>) => {
         datatype.number({ min: 0, max: 4 }) * 0.25;
   restaurant.contract_start_date = toDateOnly(start);
   restaurant.renewal_date = toDateOnly(renewal);
+  // about a quarter of Live accounts renew within the next 4 weeks
+  if (restaurant.account_status === "live" && weightedBoolean(25)) {
+    restaurant.renewal_date = toDateOnly(
+      new Date(Date.now() + datatype.number({ min: 3, max: 28 }) * 86400000),
+    );
+  }
   const done =
     restaurant.account_status === "onboarding"
       ? datatype.number({ min: 0, max: 4 })

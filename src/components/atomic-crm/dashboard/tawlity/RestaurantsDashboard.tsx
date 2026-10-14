@@ -13,7 +13,7 @@ import {
 import { HealthDot } from "../../tawlity/HealthDot";
 import { formatDateDMY, formatMoney } from "../../tawlity/kuwait";
 import type { Company, Deal } from "../../types";
-import { TasksList } from "../TasksList";
+import { FollowUpRow } from "./FollowUpRow";
 import { BarList } from "./BarList";
 import { StatTile } from "./StatTile";
 import { useCounts } from "./useCounts";
@@ -23,20 +23,40 @@ const listLink = (resource: string, filter: Record<string, unknown>) =>
 
 const toDateOnly = (date: Date) => date.toISOString().split("T")[0];
 
-export const RestaurantsDashboard = () => (
-  <div className="flex flex-col gap-6">
-    <AccountStatusRow />
-    <RevenueRow />
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <div className="lg:col-span-7 flex flex-col gap-6">
+export const RestaurantsDashboard = () => {
+  const translate = useTranslate();
+  return (
+    <div className="flex flex-col gap-6">
+      <KpiSection title={translate("crm.dashboard.tawlity.section_accounts")}>
+        <AccountStatusRow />
+      </KpiSection>
+      <KpiSection title={translate("crm.dashboard.tawlity.section_revenue")}>
+        <RevenueRow />
+      </KpiSection>
+      <KpiSection title={translate("crm.dashboard.tawlity.section_follow_up")}>
+        <FollowUpRow />
+      </KpiSection>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <AttentionList />
         <RestaurantsByGovernorate />
       </div>
-      <div className="lg:col-span-5">
-        <TasksList />
-      </div>
     </div>
-  </div>
+  );
+};
+
+const KpiSection = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => (
+  <section className="flex flex-col gap-2">
+    <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      {title}
+    </h2>
+    {children}
+  </section>
 );
 
 const SectionTitle = ({
